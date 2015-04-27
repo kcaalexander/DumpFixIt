@@ -1,0 +1,124 @@
+SVNDumpFixIT
+=============
+
+SVNDumpFixIT is a comprehensive Subverison dump filtering, analysing
+& fixing tool, written as a alternative for svndumpfilter & svndumptool.
+SVNDumpFixIT is opensource, released under GPL2 license (Refer to the
+LICENSE file).
+
+
+SYNOPSIS
+========
+
+SVNDumpFixIT command [OPTIONS] dumpfile
+
+SVNDumpFixIT takes any one of its predefined commands as first argument
+followed by a series of global options or options specific to the command.
+Next arg is the Subversion dumpfile to be post-mortem; progress feedback
+and warning/error are diverted to stderr and refurbished dump output to
+the stdout (if output dump file not specified as part of the command options.
+
+
+DESGIN POINTS
+=============
+
+* Will be written in Python, to utilize the string handling capability of Python.
+* SVNDumpFixIT commands will create or update a cache file as it reads input
+  dump file.
+* Cache will store the file location pointers of each of the revisions, along
+  with some specific details about the revision.
+* Cache will helps to speed up multiple prases on the input dump file.
+* One cache file per input dump file and will use SHA1 to validate one-to-one
+  relation between the files.[FIXME: SHA1 calc is such a costly operation and
+  no idea how to speed it up...?]
+* A heuristic approch is taken to validate cache file, and it has following steps
+  + If file size differed, declare cache file invalid and recreate cache.
+  + If last modified timestamp changed, declare cache file invalid and recreate cache.
+* Cache and other book-keeping files will be store under directory with the
+  same name as the input dump file with '.' as prefix.
+* Will use Python pickle module to (re)store cache file.
+* Analyse command will create another cache file to list out all the issues
+  it identified with the input dump stream
+
+
+LIMITATION
+==========
+
+Immediate limitation!! ..., SVNDumpFixIT for now won't support dumpfiles
+format version 3 and above.
+
+
+LIST OF COMMANDS
+================
+
+* filter    - Takes a dumpfile as argument and exclude/include given path(s)
+              to recreate a new dump file.
+
+              --help / -h
+              --include path...
+              --exclude path...
+              --renumber-revs
+              --drop-empty-revs
+
+* analyse   - Takes a dumpfile as argument and  analyse it for errors. It also
+              create a cache and booking file to make subsequent operations
+              faster.
+
+              --help / -h
+              -revision START:END / -r START:END
+              --outputfile filename / -o filename
+              --fix
+
+* fix       - Read dumpfile from stdin looks for errors and fixes it
+
+              --help / -h
+              --revision START:END / -r START:END
+              --outputfile filename / -o filename
+              --changes changefile / -c changefile
+
+* split     - Split a dumpfile into two or more fully qulalified dumpfiles
+
+              --help / -h
+              --revision START:END / -r START:END
+              -n  (number of revision per dump file or size in KB/MB/GB per dump file)
+                  eg:- -n1000r (means 100 revisions per dump file)
+                       -n1000k (means 1000 KB per dump file)
+                       -n1000m (means 1000 MB per dump file)
+                       -n1000g (means 1000 GB per dump file)
+              --incremental (creates incremental dump files
+              --outputfile filename / -o filename (sequential number starting
+                                       from zero will be prefixed to filename.
+
+* join      - join two split dumpfiles into one.
+             
+* cat       -
+
+* changed   -
+
+* filesize  -
+
+* history   -
+
+* info      -
+
+* log       -
+
+* ls/tree   -
+
+* proplist  -
+
+* propget   -
+
+* version   - Shows SVNDumpFixIT version.
+
+* help      - Show first level of help.
+
+
+Directory Layout
+================
+
+
+Authors
+=======
+
+  - Project Owner: Alexander Thomas
