@@ -6,9 +6,14 @@ SVNDumpFixIT is a comprehensive Subverison dump filtering, analysing
 SVNDumpFixIT is opensource, released under GPL2 license (Refer to the
 LICENSE file).
 
+SVNDumpFixIT is desgined as a framework which provide functionality t This will be framework with a robust extension or plugin
+system in plays to handle a dump file
+
 
 SYNOPSIS
 ========
+
+SVNDumpFixIT --help/-h
 
 SVNDumpFixIT command [OPTIONS] dumpfile
 
@@ -117,6 +122,11 @@ LIST OF COMMANDS
 Directory Layout
 ================
 
+CommandLine Options
+===================
+
+Extension
+=========
 
 Authors
 =======
