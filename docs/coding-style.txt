@@ -1,0 +1,46 @@
+1) Indentation: 4 space per indentation level. No tabs only space.
+
+2) line length 79 chars, longer line wrap with backslash (\) or with
+   parentheses, brackets and braces.
+
+3) 2 blank line around toplevel functions and classes.
+   1 blank line around class methods.
+   1 blank line to use is function where needed to seprate logical grps.
+
+4) All source code files should have the magic comment, placed either as
+   first or second line
+
+   # -*- coding: utf-8 -*-
+
+5) import should one multiple lines; top of the file after module comments
+   and docstrings. Wildcard imports ( from <module> import * ) should be
+   avoided.
+
+6) double-quoted strings should be always used. If string contains
+   double-quotes use single-quoted strings. Avoid escaping as much as
+   possible.
+
+7) whitespace in expresion and statements:
+    - no space immediatley before or after parentheses, brackets or braces.
+    - no space before a comma, semicolon, or colon
+    - one space after a comma, semicolon
+    - one space around assinment operator.
+
+8) Documentation string to use """
+
+9) Naming Conventions:
+   - Module Names: short, all-lowercase names. Underscores can be
+   used in the module name if it improves readability.
+   - Package Names: short, all-lowercase names with no underscores.
+   - Class Names: CapWords convention.
+   - Global/Local Variables: should be lowercase, with words separated by
+   underscores as necessary to improve readability. 
+   - Function Names: should be lowercase, with words separated by underscores
+   as necessary to improve readability. 
+   - Public class Method and variable names: lowercase with words separated by
+   underscores as necessary to improve readability. 
+   - Non-public class Method and variable names: leading underscore followed by
+   lowercase with words separated by underscores as necessary to improve readability.
+   - Constants: all capital letters with underscores separating words.
+ 
+
