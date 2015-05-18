@@ -45,7 +45,6 @@ def main(*args):
         command.execute(ExtensionProvider.registry['version'])
     elif command.cmd == "help":
         command.execute(ExtensionProvider.registry['usage'])
-        command.execute()
     else:
         pass
 
