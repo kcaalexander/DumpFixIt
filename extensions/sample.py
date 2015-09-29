@@ -1,4 +1,5 @@
 # -*- svndumpfixit: extension -*-
+# -*- coding: utf-8 -*-
 __version__ = "0.1"
 __author__ = "Alexander Thomas"
 __author_email__ = "alexander@collab.net"
@@ -39,8 +40,5 @@ class SampleExtension(ExtensionProvider):
 
 
     def __init__(self):
-        print "SampleExtension.__init__()"
-
-    def alex (self):
-        print "SampleExtension.alex()"
-
+        """ SampleExtension.__init__()"
+        pass
