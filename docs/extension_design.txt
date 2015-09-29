@@ -1,0 +1,23 @@
+Extension or Plugins Design principles 
+--------------------------------------
+* Extension or plugins are way to hook features or function
+  into the core.
+* Extension are loose coupled.
+* Shoul have a reduced extra overhead for writting an extension with
+  very minimal line of bookkeeping codes.
+* Plugins will be loaded everytime at start from specific pre-determined
+  location, within the packages directory structure.
+* There should a way to specifially identify a svndumpfixit plugins and
+  plugin loaders (part of the core) should check this before even trying to
+  load a given extension
+* There need to be a point or a port (probabally in the form of a class)
+  for the extension to hook into the core, by which nither the actual core
+  nor the plugin need to handle the loading and processing or plugins.
+* There need to be a way by wich plugins can register to the core.
+* There need to be a way to get the full list of plugins that is registered
+  with the core.
+* There need to be a way for plugins to cherry pick functionally and
+  implement only those once.
+* More than one plugin can implement the same functionality so a way to
+  decide the order is important.
+  
