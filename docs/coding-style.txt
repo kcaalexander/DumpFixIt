@@ -7,8 +7,8 @@
    1 blank line around class methods.
    1 blank line to use is function where needed to seprate logical grps.
 
-4) All source code files should have the magic comment, placed either as
-   first or second line
+4) Python source files should be under utf-8 encoding. All source code
+   files should have the magic comment, placed either as first or second line
 
    # -*- coding: utf-8 -*-
 
