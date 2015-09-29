@@ -1,0 +1,29 @@
+1. Starts getting executed from svndumpfixit.py present in the root folder.
+2. TODO: not sure what should be done as part of pre-execution
+
+    a) getopt() is used decide whether to use gnu or non-gnu getopt()
+    b) validate first arg if present against commands naming convention
+       ie: [[[
+                 command    ::=  (letter|"_") (letter | digit | "_")*
+                 letter     ::=  lowercase | uppercase
+                 lowercase  ::=  "a"..."z"
+                 uppercase  ::=  "A"..."Z"
+                 digit      ::=  "0"..."9"
+           ]]]
+    c) call main(command, argv)
+3. Main routine
+    a) if no arg provided assume --help, call usage_help(None)
+    b) if first arg is either --help or -h assume --help, usage_help(None)
+4. Extension in details
+5. Load Extension from predetermined location (TODO)
+   b)
+   a) All extension files should have the following magic comment, placed
+      either as first or second line of the extension code.
+
+      # -*- svndumpfixit: extension -*-
+
+       Extension loader will look for this line before it assume the file
+       as a svndumpfixit extension and proceed with extension load.
+
+    
+7. Lo
