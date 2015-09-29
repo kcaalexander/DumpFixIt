@@ -1,0 +1,18 @@
+svndumpfixit
+svndumpfixer
+dumpfixer
+dumpfixit
+powerdump
+smartdump
+dumpcracker
+dumpkeeper
+dumpcleaner
+dumpcraft
+dumprex
+TwentyFifteen
+Mayday --- existing
+
+
+Long Name: Subversion dumpfixit!
+Alias: SVN dumpfixit!
+ShortName: dumpfixit
