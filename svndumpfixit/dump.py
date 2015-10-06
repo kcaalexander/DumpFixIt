@@ -26,11 +26,7 @@ import core
 
 @Singleton
 class DumpProvider(object):
-
-    _dump_file = None # Absoulte path to dump filename.
-    _rm_cache = False # Remove existing cache file.
-    _retain_cache = True # In-memory cache, removed on prg exit.
-
+    
     def __init__(self, dmp_fname = None, rm_cache = False,
                  retain_cache = True):
         # error-out if dmp_fname is None
@@ -41,21 +37,4 @@ class DumpProvider(object):
         # if rm_cache is 'True' and retain_cache is 'False', open mem cache
         # if rm_cache is 'False' and retain_cache is 'False', open mem cache
         #
-        pass
-
-class DumpRevisionRecordProvier(DumpProvider):
-    # Holds both revision record and revision props.
-    def __init__(self, revision = None):
-        pass
-
-class DumpNodeRecordProvider(DumpRevisionRecordProvier):
-    # Holds both node record and node props.
-
-    def __init__(self, revision = None, node-path = None):
-        pass
-
-class DumpContentRecordProvider(DumpNodeRecordProvier):
-
-    def __init__(self, revision = None, node-path = None):
-        pass
 

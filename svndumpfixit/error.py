@@ -22,7 +22,7 @@
 #===============================================================================
 
 
-__all__ = ["DumpFileNotFoundError"]
+__all__ = []
 
 
 class Error(Exception):
@@ -48,8 +48,3 @@ class Error(Exception):
     __str__ = __repr__
 
 
-class DumpFileNotFoundError(Error):
-    """Raised when Dump File inot found."""
-
-    def __init__(self, fname):
-        Error.__init__(self, "Dump file '%s' not found" % fname)
