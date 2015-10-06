@@ -58,5 +58,6 @@ class CommandProvider(object):
             self.arg_list = args[1:]
 
     def execute(self, cls):
-        cls()
+        if cls is not None:
+            cls()
         pass

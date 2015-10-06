@@ -21,6 +21,10 @@
 #
 #===============================================================================
 
+import pdb
+
+__all__ = ["ExtensionProvider", "ExtensionUtils", "RegisterExtension"]
+
 def Singleton(cls):
     _instances_ = {}
 
@@ -34,9 +38,21 @@ def Singleton(cls):
 
 
 class RegisterExtension(type):
-    def __new__(cls, name, baseclass, attributes):
+    _instances_ = {}
 
-        klass = type.__new__(cls, name, baseclass, attributes)
+    def __new__(cls, name, baseclass, attributes):
+        if name not in cls._instances_:
+            klass = type.__new__(cls, name, baseclass, attributes)
+            cls._instances_[name] = klass
+        else:
+            klass = cls._instances_[name]
+        print "------"
+        print cls
+        print name
+        print baseclass
+        print attributes
+        print klass
+        print "------"
         try:
             ExtensionProvider
         except NameError:
@@ -48,8 +64,8 @@ class RegisterExtension(type):
 
         return klass
 
-    def __init__(cls, name, baseclass, attributes):
-        pass
+    def __iter__(cls):
+        return iter(cls.registry)
 
 
 class ExtensionUtils(object):
