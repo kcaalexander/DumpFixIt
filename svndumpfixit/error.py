@@ -22,14 +22,29 @@
 #===============================================================================
 
 
-__all__ = ["SvndumpfixtitException"]
+__all__ = []
 
 
-class SvndumpfixtitException(Exception):
-    """A simple exception class."""
+class Error(Exception):
+    """Base class for SvnDumpFixIt exceptions."""
 
-    def __init__( self, text ):
-        self.text = text
+    @property
+    def errmsg(self):
+        """Getter function for error message."""
+        return self._errmsg
 
-    def __str__( self ):
-        return self.text
+    @errmsg.setter
+    def errmsg(self, msg):
+        """Setter function for error message."""
+        self.__errmsg = msg
+
+    def __init__( self, msg=''):
+        self._errmsg = msg
+        Exception.__init__(self, msg)
+
+    def __repr__(self):
+        return self._errmsg
+
+    __str__ = __repr__
+
+
