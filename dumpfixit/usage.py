@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2015 Alexander Thomas <alexander@collab.net>
 #
-#    This file is part of SVNDumpFixit!
+#    This file is part of DumpFixit!
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,43 +20,19 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 #===============================================================================
+from extension import ExtensionProvider
 
-__all__ = ["CommandProvider", "Singleton"]
+class UsageExtension(ExtensionProvider):
+    command = "usage"
+    priority = 0
 
-import re
-import error
-
-def Singleton(cls):
-    _instances_ = {}
-
-    def CreateInstance(*args, **kwargs):
-        if cls not in _instances_:
-           _instances_[cls] = cls(*args, **kwargs)
-
-        return _instances_[cls]
-
-    return CreateInstance
+    __description__ = "print help details"
+    __long_description__ = __description__
 
 
-class CommandProvider(object):
-    cmd = None
-    arg_list = None
+    def __init__(self):
+        print "UsageExtension.__init__()"
 
-    def __new__(cls, *args):
-        if len(args) <= 0: # No args to parse.
-            return None
+    def alex (self):
+        print "UsageExtension.alex()"
 
-        return super(CommandProvider, cls).__new__(cls)
-
-    def __init__(self, *args):
-        if re.match("[A-Za-z][_A-Za-z0-9]*$", args[0]) is None:
-            self.cmd = "help"
-        else:
-            self.cmd = args[0].lower()
-
-        if len(args) > 1:
-            self.arg_list = args[1:]
-
-    def execute(self, cls):
-        cls()
-        pass

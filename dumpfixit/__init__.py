@@ -1,10 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #===============================================================================
 #
 #    Copyright (C) 2015 Alexander Thomas <alexander@collab.net>
 #
-#    This file is part of SVNDumpFixit!
+#    This file is part of DumpFixit!
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,42 +20,6 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 #===============================================================================
-import sys
-import os
-import getopt
-import string
-import sys
-import os
-import glob
-import time
-import re
-import importlib
 
-from svndumpfixit.extension import ExtensionProvider
-from svndumpfixit.core import CommandProvider
-from svndumpfixit import version
-from svndumpfixit import core
-from svndumpfixit import usage
-
-
-def main(*args):
-    """ Mother of all beginings. """
-    command = CommandProvider(*args)
-    if command.cmd == "version":
-        command.execute(ExtensionProvider.registry['version'])
-    elif command.cmd == "help":
-        command.execute(ExtensionProvider.registry['usage'])
-    else:
-        pass
-
-
-if __name__ == "__main__":
-    try:
-        _getopt = getopt.gnu_getopt
-    except AttributeError:
-        _getopt = getopt.getopt
-
-    sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]),
-                                                    'svndumpfixit'))
-    main(*sys.argv[1:])
+__all__ = ["extension", "usage", "core", "error", "parser", "version"]
 

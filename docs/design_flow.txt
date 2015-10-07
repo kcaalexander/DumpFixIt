@@ -1,4 +1,4 @@
-1. Starts getting executed from svndumpfixit.py present in the root folder.
+1. Starts getting executed from dumpfixit.py present in the root folder.
 2. TODO: not sure what should be done as part of pre-execution
 
     a) getopt() is used decide whether to use gnu or non-gnu getopt()
@@ -20,10 +20,10 @@
    a) All extension files should have the following magic comment, placed
       either as first or second line of the extension code.
 
-      # -*- svndumpfixit: extension -*-
+      # -*- dumpfixit: extension -*-
 
        Extension loader will look for this line before it assume the file
-       as a svndumpfixit extension and proceed with extension load.
+       as a dumpfixit extension and proceed with extension load.
 
     
 7. Lo

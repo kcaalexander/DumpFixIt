@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2015 Alexander Thomas <alexander@collab.net>
 #
-#    This file is part of SVNDumpFixit!
+#    This file is part of DumpFixit!
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,36 +20,19 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 #===============================================================================
+from extension import ExtensionProvider
+
+class VersionExtension(ExtensionProvider):
+    command = "version"
+    priority = 0
+
+    __description__ = "print version details"
+    __long_description__ = __description__
 
 
-__all__ = ["DumpFileNotFoundError"]
+    def __init__(self):
+        print "VersionExtension.__init__()"
 
+    def alex (self):
+        print "VersionExtension.alex()"
 
-class Error(Exception):
-    """Base class for SvnDumpFixIt exceptions."""
-
-    @property
-    def errmsg(self):
-        """Getter function for error message."""
-        return self._errmsg
-
-    @errmsg.setter
-    def errmsg(self, msg):
-        """Setter function for error message."""
-        self.__errmsg = msg
-
-    def __init__( self, msg=''):
-        self._errmsg = msg
-        Exception.__init__(self, msg)
-
-    def __repr__(self):
-        return self._errmsg
-
-    __str__ = __repr__
-
-
-class DumpFileNotFoundError(Error):
-    """Raised when Dump File inot found."""
-
-    def __init__(self, fname):
-        Error.__init__(self, "Dump file '%s' not found" % fname)

@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2015 Alexander Thomas <alexander@collab.net>
 #
-#    This file is part of SVNDumpFixit!
+#    This file is part of DumpFixit!
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -21,44 +21,20 @@
 #
 #===============================================================================
 
-def Singleton(cls):
-    _instances_ = {}
 
-    def CreateInstance(*args, **kwargs):
-        if cls not in _instances_:
-           _instances_[cls] = cls(*args, **kwargs)
+import core
 
-        return _instances_[cls]
+@Singleton
+class DumpProvider(object):
+    
+    def __init__(self, dmp_fname = None, rm_cache = False,
+                 retain_cache = True):
+        # error-out if dmp_fname is None
+        # check for exitance/useablity/validation of dmp_fname
+        # remove existing cache db if rm_cache is 'True'
+        # decide on the db_cache filename.
+        # if rm_cache is 'True' and retain_cache is 'True', open db cache
+        # if rm_cache is 'True' and retain_cache is 'False', open mem cache
+        # if rm_cache is 'False' and retain_cache is 'False', open mem cache
+        #
 
-    return CreateInstance
-
-
-class RegisterExtension(type):
-    def __new__(cls, name, baseclass, attributes):
-
-        klass = type.__new__(cls, name, baseclass, attributes)
-        try:
-            ExtensionProvider
-        except NameError:
-            klass.registry = {}
-        else:
-            if attributes.has_key('command'):
-                command = attributes['command']
-                ExtensionProvider.registry[command] = klass
-
-        return klass
-
-    def __init__(cls, name, baseclass, attributes):
-        pass
-
-
-class ExtensionUtils(object):
-   def __init__(self):
-       pass
-       
-   def LoadExtension(self):
-       pass
-
-
-class ExtensionProvider(ExtensionUtils):
-    __metaclass__ = RegisterExtension

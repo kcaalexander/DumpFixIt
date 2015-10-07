@@ -1,23 +1,23 @@
-SVNDumpFixIT
+DumpFixIT
 =============
 
-SVNDumpFixIT is a comprehensive Subverison dump filtering, analysing
+DumpFixIT is a comprehensive Subverison dump filtering, analysing
 & fixing tool, written as a alternative for svndumpfilter & svndumptool.
-SVNDumpFixIT is opensource, released under GPL2 license (Refer to the
+DumpFixIT is opensource, released under GPL2 license (Refer to the
 LICENSE file).
 
-SVNDumpFixIT is desgined as a framework to handle dump file.  Functionality
+DumpFixIT is desgined as a framework to handle dump file.  Functionality
 can be extended with robust extensions or plugins.
 
 
 SYNOPSIS
 ========
 
-SVNDumpFixIT --help/-h
+DumpFixIT --help/-h
 
-SVNDumpFixIT command [OPTIONS] dumpfile
+DumpFixIT command [OPTIONS] dumpfile
 
-SVNDumpFixIT takes any one of its predefined commands as first argument
+DumpFixIT takes any one of its predefined commands as first argument
 followed by a series of global options or options specific to the command.
 Next arg is the Subversion dumpfile to be post-mortem; progress feedback
 and warning/error are diverted to stderr and refurbished dump output to
@@ -28,7 +28,7 @@ DESGIN POINTS
 =============
 
 * Will be written in Python, to utilize the string handling capability of Python.
-* SVNDumpFixIT commands will create or update a cache file as it reads input
+* DumpFixIT commands will create or update a cache file as it reads input
   dump file.
 * Cache will store the file location pointers of each of the revisions, along
   with some specific details about the revision.
@@ -49,7 +49,7 @@ DESGIN POINTS
 LIMITATION
 ==========
 
-Immediate limitation!! ..., SVNDumpFixIT for now won't support dumpfiles
+Immediate limitation!! ..., DumpFixIT for now won't support dumpfiles
 format version 3 and above.
 
 
@@ -135,7 +135,7 @@ LIST OF COMMANDS
               optional drop revisions with nill content
               --revision START:END
               optional range of revision to dump
-* version   - Shows SVNDumpFixIT version.
+* version   - Shows DumpFixIT version.
 
 * help      - Show first level of help.
 
@@ -150,7 +150,7 @@ extensions/
    Plugins or extensions for hooking new features or extending existing
    features.
 
-svndumpfixit/
+dumpfixit/
    Application core source directory.
 
 

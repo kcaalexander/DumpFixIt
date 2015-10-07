@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #===============================================================================
 #
 #    Copyright (C) 2015 Alexander Thomas <alexander@collab.net>
 #
-#    This file is part of SVNDumpFixit!
+#    This file is part of DumpFixit!
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,21 +21,42 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 #===============================================================================
+import sys
+import os
+import getopt
+import string
+import sys
+import os
+import glob
+import time
+import re
+import importlib
+
+from dumpfixit.extension import ExtensionProvider
+from dumpfixit.core import CommandProvider
+from dumpfixit import version
+from dumpfixit import core
+from dumpfixit import usage
 
 
-import core
+def main(*args):
+    """ Mother of all beginings. """
+    command = CommandProvider(*args)
+    if command.cmd == "version":
+        command.execute(ExtensionProvider.registry['version'])
+    elif command.cmd == "help":
+        command.execute(ExtensionProvider.registry['usage'])
+    else:
+        pass
 
-@Singleton
-class DumpProvider(object):
-    
-    def __init__(self, dmp_fname = None, rm_cache = False,
-                 retain_cache = True):
-        # error-out if dmp_fname is None
-        # check for exitance/useablity/validation of dmp_fname
-        # remove existing cache db if rm_cache is 'True'
-        # decide on the db_cache filename.
-        # if rm_cache is 'True' and retain_cache is 'True', open db cache
-        # if rm_cache is 'True' and retain_cache is 'False', open mem cache
-        # if rm_cache is 'False' and retain_cache is 'False', open mem cache
-        #
+
+if __name__ == "__main__":
+    try:
+        _getopt = getopt.gnu_getopt
+    except AttributeError:
+        _getopt = getopt.getopt
+
+    sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]),
+                                                    'dumpfixit'))
+    main(*sys.argv[1:])
 
