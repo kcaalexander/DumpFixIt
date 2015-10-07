@@ -39,7 +39,9 @@
    as necessary to improve readability. 
    - Public class Method and variable names: lowercase with words separated by
    underscores as necessary to improve readability. 
-   - Non-public class Method and variable names: leading underscore followed by
+   - Protected class Method and variable names: leading underscore followed by
+   lowercase with words separated by underscores as necessary to improve readability.
+   - Private class Method and variable names: Two leading underscore followed by
    lowercase with words separated by underscores as necessary to improve readability.
    - Constants: all capital letters with underscores separating words.
  
