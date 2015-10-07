@@ -6,8 +6,8 @@ SVNDumpFixIT is a comprehensive Subverison dump filtering, analysing
 SVNDumpFixIT is opensource, released under GPL2 license (Refer to the
 LICENSE file).
 
-SVNDumpFixIT is desgined as a framework which provide functionality t This will be framework with a robust extension or plugin
-system in plays to handle a dump file
+SVNDumpFixIT is desgined as a framework to handle dump file.  Functionality
+can be extended with robust extensions or plugins.
 
 
 SYNOPSIS
@@ -61,9 +61,15 @@ LIST OF COMMANDS
 
               --help / -h
               --include path...
+              optional list of path to include.
               --exclude path...
+              optional list of path to exclude.
               --renumber-revs
+              optional Renumber revisions
               --drop-empty-revs
+              optional drop revisions with nill content
+              --revision START:END
+              optional range of revision to dump
 
 * analyse   - Takes a dumpfile as argument and  analyse it for errors. It also
               create a cache and booking file to make subsequent operations
@@ -108,12 +114,27 @@ LIST OF COMMANDS
 
 * log       -
 
+* setlog    -
+
 * ls/tree   -
 
 * proplist  -
 
 * propget   -
 
+* propset   - Set the property PROPNAME PROPVAL
+              --help / -h
+              --revision START:END
+              optional range of revision to dump
+
+* propdel   - Delete the property PROPNAME
+              --help / -h
+              --renumber-revs
+              optional Renumber revisions
+              --drop-empty-revs
+              optional drop revisions with nill content
+              --revision START:END
+              optional range of revision to dump
 * version   - Shows SVNDumpFixIT version.
 
 * help      - Show first level of help.
@@ -121,6 +142,18 @@ LIST OF COMMANDS
 
 Directory Layout
 ================
+
+doc/
+   Users & Developers docs and scribbling location.
+
+extensions/
+   Plugins or extensions for hooking new features or extending existing
+   features.
+
+svndumpfixit/
+   Application core source directory.
+
+
 
 CommandLine Options
 ===================
