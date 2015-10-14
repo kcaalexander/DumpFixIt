@@ -20,3 +20,31 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 #===============================================================================
+
+__all__ = ["CacheProvider"]
+
+import os
+import sqlite3
+
+import error
+
+class CacheProvider(object):
+
+    _dump_file = None # Fullpath to source dump file.
+    _cache_file = None # Fullpath to cache file
+    _cache_fresh = False # if True; remove existing cache file.
+    _cache_inmem = False # if True create a non-pristine in-memory cache.
+    _cache_conn = None # fd to open cache file.
+    _CACHE_SCHEMA = {}
+
+
+    def __init__(self, dump_fname, cache_fresh = False, cache_inmem = False):
+       if dump_fname is None:
+           raise DumpFilenameMissingError
+
+       self._dump_file = os.path.abspath(dump_fname)
+       self._cache_fresh = cache_fresh
+       self._cache_inmem = cache_inmem
+       self._cache_file = os.path.join(os.path.dirname(self._dump_file),
+                                       ".%s.cache"
+                                         % (os.path.basename(self._dump_file)))
