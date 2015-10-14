@@ -37,6 +37,54 @@ class CacheProvider(object):
     _cache_conn = None # fd to open cache file.
     _CACHE_SCHEMA = {}
 
+    _CACHE_SCHEMA[0] = []
+    _CACHE_SCHEMA[1] = [
+      """PRAGMA foreign_keys = ON""",
+      """DROP TABLE IF EXISTS Header""",
+      """CREATE TABLE Header(DumpVersion SMALLINT NOT NULL,
+                             Uuid TEXT NOT NULL,
+                             Checksum TEXT)""",
+      """DROP TABLE IF EXISTS Revision""",
+      """CREATE TABLE Revision(Rev INTEGER PRIMARY KEY NOT NULL,
+                               PropContentLen INTEGER,
+                               ContentLen INTEGER,
+                               FilePos INTEGER,
+                               RecLen INTEGER,
+                               Checksum TEXT)""",
+      """DROP TABLE IF EXISTS RevisionProps""",
+      """CREATE TABLE RevisionProps(Rev INTEGER NOT NULL,
+                                    Key TEXT,
+                                    Value TEXT,
+                                    FOREIGN KEY(Rev)
+                                    REFERENCES Revision(Rev))""",
+      """DROP TABLE IF EXISTS Node""",
+      """CREATE TABLE Node(Rev INTEGER NOT NULL,
+                           NodeID INTEGER,
+                           NodePath TEXT NOT NULL,
+                           NodeKind TEXT,
+                           NodeAction TEXT,
+                           NodeCopyFromRev INTEGER,
+                           NodeCopyFromPath TEXT,
+                           PropContentLen INTEGER,
+                           TextContentLen INTEGER,
+                           TextCopySrcMD5 TEXT,
+                           TextCopySrcSHA1 TEXT,
+                           TextContentMD5 TEXT,
+                           TextContentSHA1 TEXT,
+                           ContentLen INTEGER,
+                           FilePos INTEGER,
+                           RecLen INTEGER,
+                           Checksum TEXT,
+                           PRIMARY KEY(Rev, NodeID))""",
+      """DROP TABLE IF EXISTS NodeProps""",
+      """CREATE TABLE NodeProps(Rev INTEGER NOT NULL,
+                                NodeID INTEGER NOT NULL,
+                                Key TEXT,
+                                VALUE TEXT,
+                                FOREIGN KEY(Rev, NodeID)
+                                REFERENCES Node(Rev, NodeID))"""
+    ]
+
 
     def __init__(self, dump_fname, cache_fresh = False, cache_inmem = False):
        if dump_fname is None:
