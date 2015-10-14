@@ -22,7 +22,8 @@
 #===============================================================================
 
 
-__all__ = ["DumpFileNotFoundError"]
+__all__ = ["DumpFixItError", "DumpFileNotFoundError",
+           "DumpFilenameMissingError"] 
 
 
 class Error(Exception):
@@ -48,8 +49,26 @@ class Error(Exception):
     __str__ = __repr__
 
 
-class DumpFileNotFoundError(Error):
-    """Raised when Dump File inot found."""
+class DumpFixItError(Error):
+    """Raised when for generic error."""
+    def __init__(self, err):
+        if isinstance(err, Exception):
+            Error.__init__(self, "(%s) %s" %(
+                                 err.__class__.__name__,
+                                 err.strerror))
+        elif isinstance(err, str):
+            Error.__init__(self, err)
+        else:
+            Error.__init__(self, "Unknown error while executing.")
 
+
+class DumpFileNotFoundError(Error):
+    """Raised when Dump File not found."""
     def __init__(self, fname):
-        Error.__init__(self, "Dump file '%s' not found" % fname)
+        Error.__init__(self, "Dump file '%s' not found." % fname)
+
+
+class DumpFilenameMissingError(Error):
+    """Raised when Dump Filename is missing or not provided."""
+    def __init__(self):
+        Error.__init__(self, "Missing Dump filename.")
