@@ -96,3 +96,27 @@ class CacheProvider(object):
        self._cache_file = os.path.join(os.path.dirname(self._dump_file),
                                        ".%s.cache"
                                          % (os.path.basename(self._dump_file)))
+
+    def open(self):
+       # Remove existing cache file.
+       if os.path.exists(self._cache_file) and (self._cache_fresh is True):
+           os.remove(self._cache_file)
+
+       # Connect to a cache.
+       if self._cache_inmem is True:
+           self._cache_conn = sqlite3.connect(":memory:")
+       else:
+           self._cache_conn = sqlite3.connect(self._cache_file)
+
+       cur = self._cache_conn.cursor()
+       cur.execute('PRAGMA user_version')
+       schema_version = int(cur.fetchone()[0])
+
+       for i in range(schema_version+1, len(self._CACHE_SCHEMA)):
+           for j in self._CACHE_SCHEMA[i]:
+               cur.execute(j)
+
+           cur.execute('PRAGMA user_version = %d' %(i))
+
+       self._cache_conn.commit()
+       cur.close()
