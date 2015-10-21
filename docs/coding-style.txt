@@ -37,12 +37,48 @@
    underscores as necessary to improve readability. 
    - Function Names: should be lowercase, with words separated by underscores
    as necessary to improve readability. 
-   - Public class Method and variable names: lowercase with words separated by
+   - Public function, class member or data member: lowercase with words separated by
    underscores as necessary to improve readability. 
-   - Protected class Method and variable names: leading underscore followed by
+   - Protected function, class member or data member: leading underscore followed by
    lowercase with words separated by underscores as necessary to improve readability.
-   - Private class Method and variable names: Two leading underscore followed by
+   - Private function, class member or data member: Two leading underscore followed by
    lowercase with words separated by underscores as necessary to improve readability.
    - Constants: all capital letters with underscores separating words.
  
+10) Docstring Conventions:
+   - All modules, functions, classes, class methods should have docstrings.
+   - Always use """triple double quotes""" around docstrings.
+   - If docstring contains characters to be escpaed use
+     r"""raw triple double quotes""" around docstrings.
+   - If docstring contains unicode characters use 
+     u"""Unicode triple double quotes""" around docstrings.
+   - No blank line either before or after the docstring.
+   - A one-line docstring should be like
+     """Do something and return something."""
+   - A multi-line docstring should be like
+     """
+     Do something and return something.
+     """
+   - In Multi-line docstring, first line should be a summary line,
+     followed by blank line, followed by more elaborate description,
+     followed by arguments, side-effects/limitation/restriction,
+     return, exceptions.
 
+     """
+     A single line to summrize.
+
+     A detailed multi-line description of its behaviour.
+
+     Note:
+        Include any side-effects/limitation/restriction.
+
+     Args:
+        param1 (str): description of 'param1'
+        param2 (int): description of 'param2', Defaults to None.
+
+     Returns:
+        tuple: description of return value.
+
+     Raises:
+        ValueError: description of when this exeception will raise.
+     """   
