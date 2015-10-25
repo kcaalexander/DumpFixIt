@@ -22,7 +22,7 @@
 #===============================================================================
 
 
-__all__ = ["get_header", "get_revision"]
+__all__ = ["get_header", "get_revision", "get_revisions"]
 
 PROPS_END_STR = "PROPS-END"
 DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
@@ -240,3 +240,46 @@ def get_revision(fs, rev = None):
     # TODO: Include node generator part of rev_record.
 
     return rev_record
+
+
+def get_revisions(fs, rev=0):
+    """
+    Generator for revision records.
+
+    Create a iterator for revision records which includes revision,
+    revprops, nodes starting from a given revision to the last revision.
+
+    Args:
+       fs (file): File object of dumpfile to read
+       rev (long): Revision number to get. Default to 0.
+
+    Returns:
+       tuple: With 5 elements, index as follows...
+              0) (long) First element is a file pointer to the begining
+                        of the revision.
+              1) (long) Size of the revision record.
+              2) (dict) revision record.
+              3) (dict) revprops record for the revision.
+              4) (iter) node records for the revision.
+
+    Raises:
+       StopIteration: When no more revision records to iterate.
+    """
+
+    # Rewinds the file pointer everytime to top of the file
+    # when you call the generator.
+    fs.seek(0)
+    revision = rev
+
+    while True:
+         # Finds the next revision record.
+         rev_record = _find_revision(fs, rev=revision)
+         # Finds the revprops for revision.
+         rev_record += (_find_revprops(fs, rev_record),)
+         # TODO: Include node generator part of rev_record.
+
+         yield rev_record
+         # Move to next rev.
+         revision += 1
+
+
