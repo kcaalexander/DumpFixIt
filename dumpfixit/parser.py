@@ -22,3 +22,36 @@
 #===============================================================================
 
 
+__all__ = []
+
+PROPS_END_STR = "PROPS-END"
+DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
+UUID_STR = "UUID"
+REVISION_STR = "Revision-number"
+PROP_CONTENTLEN_STR = "Prop-content-length"
+TEXT_CONTENTLEN_STR = "Text-content-length"
+CONTENTLEN_STR = "Content-length"
+NODE_PATH_STR = "Node-path"
+
+NODE_RECORD_HEADERS = [
+    NODE_PATH_STR,
+    "Node-kind",
+    "Node-action",
+    "Node-copyfrom-rev",
+    "Node-copyfrom-path",
+    PROP_CONTENTLEN_STR,
+    TEXT_CONTENTLEN_STR,
+    "Text-copy-source-md5",
+    "Text-copy-source-sha1",
+    "Text-content-md5",
+    "Text-content-sha1",
+    CONTENTLEN_STR
+]
+
+REV_RECORD_HEADERS = [
+    REVISION_STR,
+    PROP_CONTENTLEN_STR,
+    CONTENTLEN_STR
+]
+
+
