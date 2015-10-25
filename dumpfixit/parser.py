@@ -22,7 +22,7 @@
 #===============================================================================
 
 
-__all__ = []
+__all__ = ["get_header"]
 
 PROPS_END_STR = "PROPS-END"
 DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
@@ -55,3 +55,39 @@ REV_RECORD_HEADERS = [
 ]
 
 
+def get_header(fs):
+    """
+    Reads header lines from a give dumpfile.
+
+    Args:
+       fs (file): File object of dumpfile to read
+
+    Returns:
+       dict: Header record.
+    """
+
+    record={}
+    fs.seek(0)
+    line = fs.readline()
+    while line != "":
+        s = line.split(":", 1)
+        # WARNING: Dump version stamp must be the first line, if not
+        # "Malformed dumpfile header" error occurs. But we do ignore
+        # this rule, because anyhow we will regenerate the dump file
+        # correctly.
+        if s[0] == DUMP_FORMAT_STR:
+            record[DUMP_FORMAT_STR] = int(s[1])
+
+        if s[0] == UUID_STR:
+            record[UUID_STR] = s[1].strip()
+            # returns as soon as the uuid is found.
+            break
+
+        if record.has_key(DUMP_FORMAT_STR) and \
+           record[DUMP_FORMAT_STR] < 2:
+            # UUID won't exist for version below 2.
+            break
+
+        line = fs.readline()
+
+    return record
