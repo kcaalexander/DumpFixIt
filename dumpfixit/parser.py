@@ -132,7 +132,7 @@ def _find_revision(fs, rev = None, pos = None):
               3) (dict) revprops record for the revision.
     """
 
-    if pos is not None: 
+    if pos is not None:
         fs.seek(pos)
 
     record={}
