@@ -22,7 +22,7 @@
 #===============================================================================
 
 
-__all__ = ["get_header", "get_revision", "get_revisions"]
+__all__ = ["get_header", "get_revision", "get_revision_iter"]
 
 PROPS_END_STR = "PROPS-END"
 DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
@@ -242,9 +242,9 @@ def get_revision(fs, rev = None):
     return rev_record
 
 
-def get_revisions(fs, rev=0):
+def get_revision_iter(fs, rev=0):
     """
-    Generator for revision records.
+    Return a generator yielding a revision record.
 
     Create a iterator for revision records which includes revision,
     revprops, nodes starting from a given revision to the last revision.
