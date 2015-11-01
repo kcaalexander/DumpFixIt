@@ -21,20 +21,54 @@
 #
 #===============================================================================
 
+from core import Singleton
+from cache import CacheProvider
+import error
+import parser
+import os.path
+import pdb
 
-import core
+__all__ = ["DumpProvider"]
+
+
 
 @Singleton
 class DumpProvider(object):
-    
-    def __init__(self, dmp_fname = None, rm_cache = False,
-                 retain_cache = True):
-        # error-out if dmp_fname is None
-        # check for exitance/useablity/validation of dmp_fname
-        # remove existing cache db if rm_cache is 'True'
-        # decide on the db_cache filename.
-        # if rm_cache is 'True' and retain_cache is 'True', open db cache
-        # if rm_cache is 'True' and retain_cache is 'False', open mem cache
-        # if rm_cache is 'False' and retain_cache is 'False', open mem cache
-        #
 
+
+    __dump_file__ = None # Absoulte path to dump filename.
+    __dump_format__ = None # Dump file format
+    __dump_uuid__ = None # Dump UUID
+
+    _dump_fptr = None # File descriptor to open dump file.
+    _rm_cache = False # Remove existing cache file.
+    _retain_cache = True # In-memory cache, removed on prg exit.
+
+
+    def __init__(self, dump_fname = None, rm_cache = False,
+                 retain_cache = True):
+        if dump_fname is None:
+            raise DumpFilenameMissingError
+
+        self._rm_cache = rm_cache
+        self._retain_cache = retain_cache
+
+        self.__dump_file__ = os.path.abspath(dump_fname)
+        if not os.path.exists(self.__dump_file__):
+            raise DumpFileNotFoundError(self.__dump_file__)
+
+        try:
+            self._dump_fptr = open(self.__dump_file__, "rt")
+            header = parser.get_header(self._dump_fptr)
+            self.__dump_format__ = int(header['SVN-fs-dump-format-version'])
+            self.__dump_uuid__ = str(header['UUID'])
+        except Exception as err:
+            raise DumpFixItError(err)
+
+
+    def reader(self):
+        pass
+
+
+    def writer(self, dump_fname = None, dump_ver = 2, dump_uuid = None):
+        pass
