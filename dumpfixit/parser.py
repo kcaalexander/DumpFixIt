@@ -141,6 +141,8 @@ def _get_revision(fs, rev = None, pos = None):
     found_pos = 0
     found_size = 0
 
+    # Revision record starts of with the "Revision-number:" and ends with
+    # new line "\n".
     line = fs.readline()
     while line != "":
         s = line.split(":", 1)
@@ -211,7 +213,8 @@ def get_revision(fs, rev = None):
     Get a revision record.
 
     Get revision details including revprops and node record for a given
-    revision from the dump file and returns.
+    revision from the dump file and returns a tuple. If no revision is
+    given then None is returned.
 
     Args:
        fs (file): File object of dumpfile to read
@@ -229,6 +232,7 @@ def get_revision(fs, rev = None):
 
     if rev is None:
         return None
+
     # Rewinds the file pointer everytime to top of the file
     # when you call the generator.
     fs.seek(0)
