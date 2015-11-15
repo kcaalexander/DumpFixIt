@@ -55,18 +55,18 @@ REV_RECORD_HEADERS = [
 ]
 
 
-def _find_revprops(fs, rev_record):
+def _get_revprops(fs, rev_record):
     """
     Get a revprops from a given revision record.
 
     Find the revisional properties (revprops) for a given revision record
-    tuple returned by _find_revision(). Will move the file pointer to next
+    tuple returned by _get_revision(). Will move the file pointer to next
     line following the revision record and read line by lines till the
     'PROPS-END' tag.
 
     Args:
        fs (file): File object of dumpfile to read
-       rev_record (tuple): As returned by _fine_revision().
+       rev_record (tuple): As returned by _get_revision().
 
     Return:
        dict: Containg revprops entries.
@@ -108,7 +108,7 @@ def _find_revprops(fs, rev_record):
     return record
 
 
-def _find_revision(fs, rev = None, pos = None):
+def _get_revision(fs, rev = None, pos = None):
     """
     Get a revision record for given revision.
 
@@ -234,9 +234,9 @@ def get_revision(fs, rev = None):
     fs.seek(0)
 
     # Finds the next revision record.
-    rev_record = _find_revision(fs, rev=rev)
+    rev_record = _get_revision(fs, rev=rev)
     # Finds the revprops for revision.
-    rev_record += (_find_revprops(fs, rev_record),)
+    rev_record += (_get_revprops(fs, rev_record),)
     # TODO: Include node generator part of rev_record.
 
     return rev_record
@@ -273,9 +273,9 @@ def get_revision_iter(fs, rev=0):
 
     while True:
          # Finds the next revision record.
-         rev_record = _find_revision(fs, rev=revision)
+         rev_record = _get_revision(fs, rev=revision)
          # Finds the revprops for revision.
-         rev_record += (_find_revprops(fs, rev_record),)
+         rev_record += (_get_revprops(fs, rev_record),)
          # TODO: Include node generator part of rev_record.
 
          yield rev_record
