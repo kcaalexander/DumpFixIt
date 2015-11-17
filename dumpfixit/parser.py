@@ -54,6 +54,167 @@ REV_RECORD_HEADERS = [
     CONTENTLEN_STR
 ]
 
+# FIXME: How to be tolerant to malformed dumpfile.
+# What if, if we don't find what we look for in the
+# specific position?
+
+def _get_nodeprops(fs, node_record):
+    """
+    Get a revprops from a given revision record.
+
+    Find the revisional properties (revprops) for a given revision record
+    tuple returned by _get_revision(). Will move the file pointer to next
+    line following the revision record and read line by lines till the
+    'PROPS-END' tag.
+
+    Args:
+       fs (file): File object of dumpfile to read
+       rev_record (tuple): As returned by _get_revision().
+
+    Return:
+       dict: Containg revprops entries.
+    """
+    if node_record[0] is not None and \
+       node_record[1] is not None:
+        fs.seek(node_record[0] + node_record[1])
+
+    record = {}
+
+    line = fs.readline()
+    while line != "":
+        if line.strip() == PROPS_END_STR:
+            break
+
+        # Reads K record.
+        krec = line.strip().split()
+        key = fs.readline().strip()
+        if long(krec[1]) != len(key):
+          # TODO: raise a warning exception to say key len and actual
+          # don't match.
+          pass
+
+        # Reads V record.
+        line = fs.readline()
+        vrec = line.strip().split()
+        value = fs.readline().strip()
+        if long(vrec[1]) != len(value):
+          # TODO: raise a warning exception to say key len and actual don't
+          # match.
+          pass
+
+        record[key] = value
+        line = fs.readline()
+
+    return record
+    pass
+
+
+def _get_node_content(fs, node_record, skip = False):
+    """
+    """
+    if node_record[0] is not None and \
+       node_record[1] is not None:
+        fs.seek(node_record[0] + node_record[1])
+
+    if node_record[2].has_key(CONTENTLEN_STR) and skip == True:
+        fs.seek(long(node_record[2][CONTENTLEN_STR]), 1)
+    pass
+
+
+def _get_node(fs):
+    """
+    """
+    record = {}
+    filepos = fs.tell()
+    found_record = False
+    found_pos = 0
+    found_size = 0
+
+    # Node record starts of with the "Node-path:" and ends with
+    # new line "\n".
+    line = fs.readline()
+
+    while line != "":
+        if line.find(REVISION_STR) >= 0:
+            fs.seek(filepos)
+            break
+
+        s = line.split(":", 1)
+
+        if found_record == True and s[0] != '\n':
+            record[s[0]] = s[1].strip()
+
+        if (s[0] == NODE_PATH_STR):
+            # A node is found.
+            found_record = True
+            found_pos = filepos
+            record[NODE_PATH_STR] = s[1].strip()
+
+        if found_record == True:
+            found_size += len(line)
+
+        if found_record == True and s[0] == '\n':
+            found_record = False
+            return (found_pos, found_size, record)
+
+        filepos = fs.tell()
+        line = fs.readline()
+
+    # Noting to return.
+    return (None, None, {})
+
+
+def get_node_iter(fs, rev_record):
+    """
+    Return a generator yielding a node record.
+
+    Create a iterator for node records which includes node, nodeprops
+    from a given revision record returned by get_revision() or by
+    get_revision_iter().
+
+    Args:
+       fs (file): File object of dumpfile to read
+       rev_record (tuple): As returned by get_revision() or
+                           get_revision_iter()
+
+    Returns:
+       tuple: With 5 elements, index as follows...
+              0) (long) First element is a file pointer to the begining
+                        of the revision.
+              1) (long) Size of the revision record.
+              2) (dict) revision record.
+              3) (dict) revprops record for the revision.
+              4) (iter) node records for the revision.
+
+    Raises:
+       StopIteration: When no more node records to iterate.
+    """
+
+    if rev_record[0] is not None and \
+       rev_record[1] is not None:
+        fs.seek(rev_record[0] + rev_record[1])
+
+    if rev_record[2] and \
+       rev_record[2].has_key(CONTENTLEN_STR):
+        fs.seek(long(rev_record[2][CONTENTLEN_STR]) + 1, 1)
+
+    while True:
+         # Finds the next node record.
+         node_record = _get_node(fs)
+         if node_record[0] is None:
+             break
+
+         # Finds the nodeprops for node.
+         if node_record[2].has_key(PROP_CONTENTLEN_STR):
+            node_record += (_get_nodeprops(fs, node_record),)
+
+         if node_record[2].has_key(CONTENTLEN_STR):
+            _get_node_content(fs, node_record, True)
+
+         fs.seek(2, 1)
+
+         yield node_record
+
 
 def _get_revprops(fs, rev_record):
     """
@@ -75,9 +236,6 @@ def _get_revprops(fs, rev_record):
        rev_record[1] is not None:
         fs.seek(rev_record[0] + rev_record[1])
 
-    # FIXME: How to be tolerant to malformed dumpfile.
-    # What if, if we don't find what we look for in the
-    # specific position?
     record = {}
 
     line = fs.readline()
