@@ -278,6 +278,8 @@ def get_revision_iter(fs, rev=0):
     while True:
          # Finds the next revision record.
          rev_record = _get_revision(fs, rev=revision)
+         if rev_record[1] is None:
+             break
          # Finds the revprops for revision.
          rev_record += (_get_revprops(fs, rev_record),)
          # TODO: Include node generator part of rev_record.
