@@ -60,16 +60,16 @@ REV_RECORD_HEADERS = [
 
 def _get_nodeprops(fs, node_record):
     """
-    Get a revprops from a given revision record.
+    Get a nodeprops from a given node record.
 
-    Find the revisional properties (revprops) for a given revision record
-    tuple returned by _get_revision(). Will move the file pointer to next
-    line following the revision record and read line by lines till the
+    Find the node properties (nodprops) for a given node record tuple
+    returned by _get_node(). Will move the file pointer to next line
+    following the revision record and read line by lines till the
     'PROPS-END' tag.
 
     Args:
        fs (file): File object of dumpfile to read
-       rev_record (tuple): As returned by _get_revision().
+       node_record (tuple): As returned by _get_node().
 
     Return:
        dict: Containg revprops entries.
@@ -109,8 +109,28 @@ def _get_nodeprops(fs, node_record):
     pass
 
 
-def _get_node_content(fs, node_record, skip = False):
+def _get_node_content(fs, node_record, skip = False, size=4096):
     """
+    Get a node content from a given node record.
+    Function is incomplete and implemented only skip part only.
+
+    This function is expected to return content of a node as
+    iterator. Each time next() of iterator is called 4K chunk is
+    returned. Default 4K chunk size can be customized with SIZE arg.
+
+    Args:
+       fs (file): File object of dumpfile to read
+       node_record (tuple): As returned by _get_node().
+       skip (boolean): A True will skip the content by just moving the
+               file pointer. Defaults to False
+       size (long): Content size in bytes to return.
+
+    Returns:
+       string: Returns SIZE or less long bytes, if SKIP is set to FALSE.
+               Returns nothing if SKIP is set to TRUE.
+
+    Raises:
+       StopIteration: When no more content to iterate.
     """
     if node_record[0] is not None and \
        node_record[1] is not None:
@@ -123,6 +143,24 @@ def _get_node_content(fs, node_record, skip = False):
 
 def _get_node(fs):
     """
+    Get a node record.
+
+    Everytime called will find the next node record, which starts
+    with 'Node-path:" and ends with new line ("\n"). Function won't
+    search for node record beyond a Revision boundry (if it encounters
+    a "Revision-number:" tag). Returns a tuple if a node record is
+    found or else a None tuple.
+
+    Args:
+       fs (file): File object of dumpfile to read
+
+    Return:
+      tuple: With tuple containing 3 elements. All elements will 'None' if
+             node not found else index for the elements are as follows...
+              0) (long) First element is a file pointer to the begining
+                        of the revision.
+              1) (long) Size of the revision record.
+              2) (dict) node record.
     """
     record = {}
     filepos = fs.tell()
