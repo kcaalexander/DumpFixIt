@@ -325,7 +325,6 @@ def _get_revision(fs, rev = None, pos = None):
                         of the revision.
               1) (long) Size of the revision record.
               2) (dict) revision record.
-              3) (dict) revprops record for the revision.
     """
 
     if pos is not None:
