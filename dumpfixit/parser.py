@@ -399,7 +399,8 @@ def get_revision(fs, rev = None):
     rev_record = _get_revision(fs, rev=rev)
     # Finds the revprops for revision.
     rev_record += (_get_revprops(fs, rev_record),)
-    # TODO: Include node generator part of rev_record.
+    # Including node generator part of rev_record.
+    rev_record += (get_node_iter(fs, rev_record),)
 
     return rev_record
 
@@ -440,7 +441,8 @@ def get_revision_iter(fs, rev=0):
              break
          # Finds the revprops for revision.
          rev_record += (_get_revprops(fs, rev_record),)
-         # TODO: Include node generator part of rev_record.
+         # Included node generator part of rev_record.
+         rev_record += (get_node_iter(fs, rev_record),)
 
          yield rev_record
          # Move to next rev.
