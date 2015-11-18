@@ -22,7 +22,8 @@
 #===============================================================================
 
 
-__all__ = ["get_header", "get_revision", "get_revision_iter"]
+__all__ = ["get_header", "get_revision", "get_revision_iter", "get_node_iter",
+           "_get_node_content"]
 
 PROPS_END_STR = "PROPS-END"
 DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
