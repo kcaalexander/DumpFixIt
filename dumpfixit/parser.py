@@ -112,12 +112,13 @@ def _get_nodeprops(fs, node_record):
 
 def get_node_content(fs, node_record, skip = False, size=4096):
     """
-    Get a node content from a given node record.
-    Function is incomplete and implemented only skip part only.
+    Gets node content from a given node record.
 
-    This function is expected to return content of a node as
-    iterator. Each time next() of iterator is called 4K chunk is
-    returned. Default 4K chunk size can be customized with SIZE arg.
+    Returns content of a node as iterator. Each time next() of
+    iterator is called 4K chunk is returned. Default 4K chunk
+    size can be customized with SIZE arg. If SKIP is set True,
+    the file pointer will be moved passed content without returning
+    content.
 
     Args:
        fs (file): File object of dumpfile to read
@@ -128,18 +129,41 @@ def get_node_content(fs, node_record, skip = False, size=4096):
 
     Returns:
        string: Returns SIZE or less long bytes, if SKIP is set to FALSE.
-               Returns nothing if SKIP is set to TRUE.
+               Returns None if SKIP is set to TRUE.
 
     Raises:
        StopIteration: When no more content to iterate.
     """
+
+    def get_node_content_iter(fs, node_record, size):
+        """
+        Generator yielding iterator to iterate SIZE or less
+        chuck on call to next().
+        """
+        content_len = long(node_record[2][CONTENTLEN_STR])
+
+        while content_len > 0:
+            if content_len >= size:
+               read_size = size
+            else:
+               read_size = content_len
+
+            yield fs.read(read_size)
+            content_len -= read_size
+
+
     if node_record[0] is not None and \
        node_record[1] is not None:
         fs.seek(node_record[0] + node_record[1])
 
+    # On Skip, just skip content and return none.
     if node_record[2].has_key(CONTENTLEN_STR) and skip == True:
         fs.seek(long(node_record[2][CONTENTLEN_STR]), 1)
-    pass
+        return None
+
+    # On !Skip, reads content with a iterator.
+    if node_record[2].has_key(CONTENTLEN_STR) and skip == False:
+        return get_node_content_iter(fs, node_record, size)
 
 
 def _get_node(fs):
@@ -245,10 +269,10 @@ def get_node_iter(fs, rev_record):
 
          # Finds the nodeprops for node.
          if node_record[2].has_key(PROP_CONTENTLEN_STR):
-            node_record += (_get_nodeprops(fs, node_record),)
+             node_record += (_get_nodeprops(fs, node_record),)
 
          if node_record[2].has_key(CONTENTLEN_STR):
-            get_node_content(fs, node_record, True)
+             get_node_content(fs, node_record, True)
 
          fs.seek(2, 1)
 
