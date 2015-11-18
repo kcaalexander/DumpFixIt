@@ -23,7 +23,7 @@
 
 
 __all__ = ["get_header", "get_revision", "get_revision_iter", "get_node_iter",
-           "_get_node_content"]
+           "get_node_content"]
 
 PROPS_END_STR = "PROPS-END"
 DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
@@ -110,7 +110,7 @@ def _get_nodeprops(fs, node_record):
     pass
 
 
-def _get_node_content(fs, node_record, skip = False, size=4096):
+def get_node_content(fs, node_record, skip = False, size=4096):
     """
     Get a node content from a given node record.
     Function is incomplete and implemented only skip part only.
@@ -248,7 +248,7 @@ def get_node_iter(fs, rev_record):
             node_record += (_get_nodeprops(fs, node_record),)
 
          if node_record[2].has_key(CONTENTLEN_STR):
-            _get_node_content(fs, node_record, True)
+            get_node_content(fs, node_record, True)
 
          fs.seek(2, 1)
 
