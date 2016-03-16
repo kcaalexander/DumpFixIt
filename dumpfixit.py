@@ -40,7 +40,7 @@ from dumpfixit import usage
 
 
 def main(*args):
-    """ Mother of all beginings. """
+    """ Mother of all beginnings. """
     command = CommandProvider(*args)
     if command.cmd == "version":
         command.execute(ExtensionProvider.registry['version'])
