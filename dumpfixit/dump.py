@@ -66,7 +66,31 @@ class DumpProvider(object):
             raise DumpFixItError(err)
 
 
-    def reader(self):
+    def reader(self, rev=0):
+        cp = CacheProvider(self.__dump_file__, self._rm_cache,
+                           not self._retain_cache)
+        cp.open()
+
+        header = parser.get_header(self._dump_fptr)
+        # check for exitance/useablity/validation of dmp_fname
+        # Read in dump version and uuid
+        #
+        #pdb.set_trace()
+        revision = parser.get_revision_iter(self._dump_fptr, rev)
+        #node = parser._get_node(self._dump_fptr, revision)
+        while True:
+          try:
+             rev = revision.next()
+             if rev[0] is None:
+                 break;
+             else:
+                 while True:
+                    try:
+                       node = rev[4].next()
+                    except StopIteration:
+                       break;
+          except StopIteration:
+             break;
         pass
 
 
