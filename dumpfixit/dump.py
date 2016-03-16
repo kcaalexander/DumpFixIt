@@ -35,14 +35,13 @@ __all__ = ["DumpProvider"]
 @Singleton
 class DumpProvider(object):
 
-
     __dump_file__ = None # Absoulte path to dump filename.
     __dump_format__ = None # Dump file format
     __dump_uuid__ = None # Dump UUID
 
     _dump_fptr = None # File descriptor to open dump file.
     _rm_cache = False # Remove existing cache file.
-    _retain_cache = True # In-memory cache, removed on prg exit.
+    _retain_cache = True # In-memory cache, removed at exit.
 
 
     def __init__(self, dump_fname = None, rm_cache = False,
