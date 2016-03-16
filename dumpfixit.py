@@ -41,6 +41,7 @@ from dumpfixit import usage
 
 def main(*args):
     """ Mother of all beginnings. """
+
     command = CommandProvider(*args)
     if command.cmd == "version":
         command.execute(ExtensionProvider.registry['version'])
@@ -55,6 +56,9 @@ if __name__ == "__main__":
         _getopt = getopt.gnu_getopt
     except AttributeError:
         _getopt = getopt.getopt
+
+    __prgname = os.path.basename(sys.argv[0])
+    __prgdir  = os.path.abspath(os.path.dirname(sys.argv[0]))
 
     sys.path.insert(0, os.path.join(os.path.dirname(sys.argv[0]),
                                                     'dumpfixit'))
