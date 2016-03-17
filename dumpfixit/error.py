@@ -55,7 +55,7 @@ class DumpFixItError(Error):
         if isinstance(err, Exception):
             Error.__init__(self, "(%s) %s" %(
                                  err.__class__.__name__,
-                                 err.strerror))
+                                 err.message))
         elif isinstance(err, str):
             Error.__init__(self, err)
         else:
