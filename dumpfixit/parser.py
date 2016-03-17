@@ -21,6 +21,7 @@
 #
 #===============================================================================
 
+import pdb
 
 __all__ = ["DumpParser"]
 
@@ -477,7 +478,8 @@ class DumpParser(object):
 
         Args:
            fs (file): File object of dumpfile to read
-           rev (long): Revision number to get. Default to 0.
+           rev (long): Revision number from where the iterator starts.
+                       Default to 0.
 
         Returns:
            tuple: With 5 elements, index as follows...
