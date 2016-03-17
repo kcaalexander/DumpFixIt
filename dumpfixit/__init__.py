@@ -21,5 +21,5 @@
 #
 #===============================================================================
 
-__all__ = ["extension", "usage", "core", "error", "parser", "version"]
+__all__ = ["extension", "usage", "core", "error", "dump", "parser", "version"]
 
