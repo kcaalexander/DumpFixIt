@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #===============================================================================
 #
-#    Copyright (C) 2015 Alexander Thomas <alexander@collab.net>
+#    Copyright (C) 2015-16 Alexander Thomas <alexander@collab.net>
 #
 #    This file is part of DumpFixit!
 #
@@ -21,5 +21,5 @@
 #
 #===============================================================================
 
-__all__ = ["extension", "usage", "core", "error", "parser", "version"]
+__all__ = ["extension", "usage", "core", "error", "dump", "parser", "version"]
 
