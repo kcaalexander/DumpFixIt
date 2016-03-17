@@ -24,16 +24,15 @@
 from core import Singleton
 from cache import CacheProvider
 import error
-import parser
+from parser import DumpParser
 import os.path
 import pdb
 
 __all__ = ["DumpProvider"]
 
 
-
 @Singleton
-class DumpProvider(object):
+class DumpProvider(DumpParser):
 
     __dump_file__ = None # Absoulte path to dump filename.
     __dump_format__ = None # Dump file format
@@ -47,22 +46,22 @@ class DumpProvider(object):
     def __init__(self, dump_fname = None, rm_cache = False,
                  retain_cache = True):
         if dump_fname is None:
-            raise DumpFilenameMissingError
+            raise error.DumpFilenameMissingError
 
         self._rm_cache = rm_cache
         self._retain_cache = retain_cache
 
         self.__dump_file__ = os.path.abspath(dump_fname)
         if not os.path.exists(self.__dump_file__):
-            raise DumpFileNotFoundError(self.__dump_file__)
+            raise error.DumpFileNotFoundError(self.__dump_file__)
 
         try:
             self._dump_fptr = open(self.__dump_file__, "rt")
-            header = parser.get_header(self._dump_fptr)
-            self.__dump_format__ = int(header['SVN-fs-dump-format-version'])
-            self.__dump_uuid__ = str(header['UUID'])
+            header = self.get_header(self._dump_fptr)
+            self.__dump_format__ = int(header[self.DUMP_FORMAT_STR])
+            self.__dump_uuid__ = str(header[self.UUID_STR])
         except Exception as err:
-            raise DumpFixItError(err)
+            raise error.DumpFixItError(err)
 
 
     def reader(self, rev=0):
@@ -70,13 +69,13 @@ class DumpProvider(object):
                            not self._retain_cache)
         cp.open()
 
-        header = parser.get_header(self._dump_fptr)
+        header = self.get_header(self._dump_fptr)
         # check for exitance/useablity/validation of dmp_fname
         # Read in dump version and uuid
         #
         #pdb.set_trace()
-        revision = parser.get_revision_iter(self._dump_fptr, rev)
-        #node = parser._get_node(self._dump_fptr, revision)
+        revision = self.get_revision_iter(self._dump_fptr, rev)
+        #node = self._get_node(self._dump_fptr, revision)
         while True:
           try:
              rev = revision.next()
