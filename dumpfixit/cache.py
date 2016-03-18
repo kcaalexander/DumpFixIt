@@ -97,7 +97,9 @@ class CacheProvider(object):
                                        ".%s.cache"
                                          % (os.path.basename(self._dump_file)))
 
-    def open(self):
+       self.__open()
+
+    def __open(self):
        ### FIXME: Should we convert a exiting in-file cache to
        ###        in-memory, rather than deleting it?
        ###        For now we delete the in-file cache if in-memory

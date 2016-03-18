@@ -32,7 +32,7 @@ __all__ = ["DumpProvider"]
 
 
 @Singleton
-class DumpProvider(DumpParser):
+class DumpProvider(DumpParser, CacheProvider):
 
     __dump_file__ = None # Absoulte path to dump filename.
     __dump_format__ = None # Dump file format
@@ -63,11 +63,9 @@ class DumpProvider(DumpParser):
         except Exception as err:
             raise error.DumpFixItError(err)
 
+        CacheProvider.__init__(self, dump_fname, rm_cache, not retain_cache)
 
     def reader(self, rev=0):
-        cp = CacheProvider(self.__dump_file__, self._rm_cache,
-                           not self._retain_cache)
-        cp.open()
 
         header = self.get_header(self._dump_fptr)
         # check for exitance/useablity/validation of dmp_fname
