@@ -98,8 +98,15 @@ class CacheProvider(object):
                                          % (os.path.basename(self._dump_file)))
 
     def open(self):
-       # Remove existing cache file.
-       if os.path.exists(self._cache_file) and (self._cache_fresh is True):
+       ### FIXME: Should we convert a exiting in-file cache to
+       ###        in-memory, rather than deleting it?
+       ###        For now we delete the in-file cache if in-memory
+       ###        cache is opted for second time.
+
+       # Remove existing cache file, if asked to create fresh or
+       # for in-memory.
+       if (os.path.exists(self._cache_file) and \
+           (self._cache_fresh is True or self._cache_inmem is True)):
            os.remove(self._cache_file)
 
        # Connect to a cache.
