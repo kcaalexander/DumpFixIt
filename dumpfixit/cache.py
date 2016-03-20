@@ -43,6 +43,7 @@ class CacheProvider(object):
       """DROP TABLE IF EXISTS Header""",
       """CREATE TABLE Header(DumpVersion SMALLINT NOT NULL,
                              Uuid TEXT NOT NULL,
+                             Size INTEGER,
                              Checksum TEXT)""",
       """DROP TABLE IF EXISTS Revision""",
       """CREATE TABLE Revision(Rev INTEGER PRIMARY KEY NOT NULL,
@@ -129,3 +130,50 @@ class CacheProvider(object):
 
        self._cache_conn.commit()
        cur.close()
+
+
+    def cache_store_header(self, header):
+       """
+       Stores header into cache.
+
+       Takes a header record and store the header entries into the cache.
+
+       Args:
+          header: Dict of header record.
+
+       Returns:
+          None
+       """
+
+       cur = self._cache_conn.cursor()
+       cur.execute("INSERT INTO Header (DumpVersion, Uuid, Size, Checksum) " \
+                   "VALUES ('%d', '%s', '%d', '%s')" % \
+                   (header[self.DUMP_FORMAT_STR], header[self.UUID_STR], \
+                    header[self.CACHE_SIZE], header[self.CACHE_HASH]))
+       self._cache_conn.commit()
+       cur.close()
+
+
+    def cache_fetch_header(self):
+       """
+       Retrives header from cache.
+
+       Reads header entries from cache and store in a header record and returns.
+
+       Args:
+          None
+
+       Returns:
+          Dict of header record.
+       """
+       record = {}
+       cur = self._cache_conn.execute("SELECT DumpVersion, Uuid, Size, " \
+                                      "Checksum FROM Header")
+       row = cur.fetchone()
+       record[self.DUMP_FORMAT_STR] = row[0]
+       record[self.UUID_STR] = row[1]
+       record[self.CACHE_SIZE] = row[2]
+       record[self.CACHE_HASH] = row[3]
+       cur.close()
+
+       return record
