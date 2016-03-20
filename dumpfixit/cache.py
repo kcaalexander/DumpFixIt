@@ -43,7 +43,7 @@ class CacheProvider(object):
       """DROP TABLE IF EXISTS Header""",
       """CREATE TABLE Header(DumpVersion SMALLINT NOT NULL,
                              Uuid TEXT NOT NULL,
-                             Size INTEGER,
+                             RecLen INTEGER,
                              Checksum TEXT)""",
       """DROP TABLE IF EXISTS Revision""",
       """CREATE TABLE Revision(Rev INTEGER PRIMARY KEY NOT NULL,
@@ -146,7 +146,7 @@ class CacheProvider(object):
         """
 
         cur = self._cache_conn.cursor()
-        cur.execute("INSERT INTO Header (DumpVersion, Uuid, Size, Checksum) " \
+        cur.execute("INSERT INTO Header (DumpVersion, Uuid, RecLen, Checksum) " \
                     "VALUES ('%d', '%s', '%d', '%s')" % \
                     (header[self.DUMP_FORMAT_STR], header[self.UUID_STR], \
                      header[self.CACHE_SIZE], header[self.CACHE_HASH]))
@@ -167,7 +167,7 @@ class CacheProvider(object):
            Dict of header record.
         """
         record = {}
-        cur = self._cache_conn.execute("SELECT DumpVersion, Uuid, Size, " \
+        cur = self._cache_conn.execute("SELECT DumpVersion, Uuid, RecLen, " \
                                        "Checksum FROM Header")
         row = cur.fetchone()
         record[self.DUMP_FORMAT_STR] = row[0]
