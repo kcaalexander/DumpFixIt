@@ -88,92 +88,92 @@ class CacheProvider(object):
 
 
     def __init__(self, dump_fname, cache_fresh = False, cache_inmem = False):
-       if dump_fname is None:
-           raise DumpFilenameMissingError
+        if dump_fname is None:
+            raise DumpFilenameMissingError
 
-       self._dump_file = os.path.abspath(dump_fname)
-       self._cache_fresh = cache_fresh
-       self._cache_inmem = cache_inmem
-       self._cache_file = os.path.join(os.path.dirname(self._dump_file),
-                                       ".%s.cache"
+        self._dump_file = os.path.abspath(dump_fname)
+        self._cache_fresh = cache_fresh
+        self._cache_inmem = cache_inmem
+        self._cache_file = os.path.join(os.path.dirname(self._dump_file),
+                                        ".%s.cache"
                                          % (os.path.basename(self._dump_file)))
 
-       self.__open()
+        self.__open()
 
     def __open(self):
-       ### FIXME: Should we convert a exiting in-file cache to
-       ###        in-memory, rather than deleting it?
-       ###        For now we delete the in-file cache if in-memory
-       ###        cache is opted for second time.
+        ### FIXME: Should we convert a exiting in-file cache to
+        ###        in-memory, rather than deleting it?
+        ###        For now we delete the in-file cache if in-memory
+        ###        cache is opted for second time.
 
-       # Remove existing cache file, if asked to create fresh or
-       # for in-memory.
-       if (os.path.exists(self._cache_file) and \
-           (self._cache_fresh is True or self._cache_inmem is True)):
-           os.remove(self._cache_file)
+        # Remove existing cache file, if asked to create fresh or
+        # for in-memory.
+        if (os.path.exists(self._cache_file) and \
+            (self._cache_fresh is True or self._cache_inmem is True)):
+            os.remove(self._cache_file)
 
-       # Connect to a cache.
-       if self._cache_inmem is True:
-           self._cache_conn = sqlite3.connect(":memory:")
-       else:
-           self._cache_conn = sqlite3.connect(self._cache_file)
+        # Connect to a cache.
+        if self._cache_inmem is True:
+            self._cache_conn = sqlite3.connect(":memory:")
+        else:
+            self._cache_conn = sqlite3.connect(self._cache_file)
 
-       cur = self._cache_conn.cursor()
-       cur.execute('PRAGMA user_version')
-       schema_version = int(cur.fetchone()[0])
+        cur = self._cache_conn.cursor()
+        cur.execute('PRAGMA user_version')
+        schema_version = int(cur.fetchone()[0])
 
-       for i in range(schema_version+1, len(self._CACHE_SCHEMA)):
-           for j in self._CACHE_SCHEMA[i]:
-               cur.execute(j)
+        for i in range(schema_version+1, len(self._CACHE_SCHEMA)):
+            for j in self._CACHE_SCHEMA[i]:
+                cur.execute(j)
 
-           cur.execute('PRAGMA user_version = %d' %(i))
+            cur.execute('PRAGMA user_version = %d' %(i))
 
-       self._cache_conn.commit()
-       cur.close()
+        self._cache_conn.commit()
+        cur.close()
 
 
     def cache_store_header(self, header):
-       """
-       Stores header into cache.
+        """
+        Stores header into cache.
 
-       Takes a header record and store the header entries into the cache.
+        Takes a header record and store the header entries into the cache.
 
-       Args:
-          header: Dict of header record.
+        Args:
+           header: Dict of header record.
 
-       Returns:
-          None
-       """
+        Returns:
+           None
+        """
 
-       cur = self._cache_conn.cursor()
-       cur.execute("INSERT INTO Header (DumpVersion, Uuid, Size, Checksum) " \
-                   "VALUES ('%d', '%s', '%d', '%s')" % \
-                   (header[self.DUMP_FORMAT_STR], header[self.UUID_STR], \
-                    header[self.CACHE_SIZE], header[self.CACHE_HASH]))
-       self._cache_conn.commit()
-       cur.close()
+        cur = self._cache_conn.cursor()
+        cur.execute("INSERT INTO Header (DumpVersion, Uuid, Size, Checksum) " \
+                    "VALUES ('%d', '%s', '%d', '%s')" % \
+                    (header[self.DUMP_FORMAT_STR], header[self.UUID_STR], \
+                     header[self.CACHE_SIZE], header[self.CACHE_HASH]))
+        self._cache_conn.commit()
+        cur.close()
 
 
     def cache_fetch_header(self):
-       """
-       Retrives header from cache.
+        """
+        Retrives header from cache.
 
-       Reads header entries from cache and store in a header record and returns.
+        Reads header entries from cache and store in a header record and returns.
 
-       Args:
-          None
+        Args:
+           None
 
-       Returns:
-          Dict of header record.
-       """
-       record = {}
-       cur = self._cache_conn.execute("SELECT DumpVersion, Uuid, Size, " \
-                                      "Checksum FROM Header")
-       row = cur.fetchone()
-       record[self.DUMP_FORMAT_STR] = row[0]
-       record[self.UUID_STR] = row[1]
-       record[self.CACHE_SIZE] = row[2]
-       record[self.CACHE_HASH] = row[3]
-       cur.close()
+        Returns:
+           Dict of header record.
+        """
+        record = {}
+        cur = self._cache_conn.execute("SELECT DumpVersion, Uuid, Size, " \
+                                       "Checksum FROM Header")
+        row = cur.fetchone()
+        record[self.DUMP_FORMAT_STR] = row[0]
+        record[self.UUID_STR] = row[1]
+        record[self.CACHE_SIZE] = row[2]
+        record[self.CACHE_HASH] = row[3]
+        cur.close()
 
-       return record
+        return record
