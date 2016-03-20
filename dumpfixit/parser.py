@@ -22,6 +22,7 @@
 #===============================================================================
 
 import pdb
+import hashlib
 
 __all__ = ["DumpParser"]
 
@@ -34,6 +35,8 @@ class DumpParser(object):
     TEXT_CONTENTLEN_STR = "Text-content-length"
     CONTENTLEN_STR = "Content-length"
     NODE_PATH_STR = "Node-path"
+    CACHE_HASH = "CACHE-HASH"
+    CACHE_SIZE = "CACHE-SIZE"
 
     NODE_RECORD_HEADERS = [
         NODE_PATH_STR,
@@ -404,9 +407,13 @@ class DumpParser(object):
         """
 
         record={}
+        record[self.CACHE_SIZE] = 0
+        cache_hash = hashlib.md5()
         fs.seek(0)
         line = fs.readline()
         while line != "":
+            record[self.CACHE_SIZE] += len(line)
+            cache_hash.update(line)
             s = line.split(":", 1)
             # WARNING: Dump version stamp must be the first line, if not
             # "Malformed dumpfile header" error occurs. But we do ignore
@@ -427,6 +434,7 @@ class DumpParser(object):
 
             line = fs.readline()
 
+        record[self.CACHE_HASH] = cache_hash.hexdigest()
         return record
 
 
