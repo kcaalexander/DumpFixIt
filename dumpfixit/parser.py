@@ -196,6 +196,7 @@ class DumpParser(object):
         found_record = False
         found_pos = 0
         found_size = 0
+        cache_hash = hashlib.md5()
 
         # Node record starts of with the "Node-path:" and ends with
         # new line "\n".
@@ -218,10 +219,13 @@ class DumpParser(object):
                 record[self.NODE_PATH_STR] = s[1].strip()
 
             if found_record == True:
+                cache_hash.update(line)
                 found_size += len(line)
 
             if found_record == True and s[0] == '\n':
                 found_record = False
+                record[self.CACHE_HASH] = cache_hash.hexdigest()
+                record[self.CACHE_SIZE] = found_size
                 return (found_pos, found_size, record)
 
             filepos = fs.tell()
@@ -364,6 +368,7 @@ class DumpParser(object):
         found_record = False
         found_pos = 0
         found_size = 0
+        cache_hash = hashlib.md5()
 
         # Revision record starts of with the "Revision-number:" and ends with
         # new line "\n".
@@ -382,10 +387,13 @@ class DumpParser(object):
                 record[self.REVISION_STR] = int(s[1])
 
             if found_record == True:
+                cache_hash.update(line)
                 found_size += len(line)
 
             if found_record == True and s[0] == '\n':
                 found_record = False
+                record[self.CACHE_HASH] = cache_hash.hexdigest()
+                record[self.CACHE_SIZE] = found_size
                 return (found_pos, found_size, record)
 
             filepos = fs.tell()
