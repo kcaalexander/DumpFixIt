@@ -60,7 +60,7 @@ class CacheProvider(object):
                                     REFERENCES Revision(Rev))""",
       """DROP TABLE IF EXISTS Node""",
       """CREATE TABLE Node(Rev INTEGER NOT NULL,
-                           NodeID INTEGER,
+                           NodeID INTEGER PRIMARY KEY,
                            NodePath TEXT NOT NULL,
                            NodeKind TEXT,
                            NodeAction TEXT,
@@ -75,15 +75,14 @@ class CacheProvider(object):
                            ContentLen INTEGER,
                            FilePos INTEGER,
                            RecLen INTEGER,
-                           Checksum TEXT,
-                           PRIMARY KEY(Rev, NodeID))""",
+                           Checksum TEXT)""",
       """DROP TABLE IF EXISTS NodeProps""",
       """CREATE TABLE NodeProps(Rev INTEGER NOT NULL,
                                 NodeID INTEGER NOT NULL,
                                 Key TEXT,
                                 VALUE TEXT,
-                                FOREIGN KEY(Rev, NodeID)
-                                REFERENCES Node(Rev, NodeID))"""
+                                FOREIGN KEY(NodeID)
+                                REFERENCES Node(NodeID))"""
     ]
 
 
