@@ -35,21 +35,31 @@ class DumpParser(object):
     TEXT_CONTENTLEN_STR = "Text-content-length"
     CONTENTLEN_STR = "Content-length"
     NODE_PATH_STR = "Node-path"
+    NODE_KIND_STR = "Node-kind"
+    NODE_ACTION_STR = "Node-action"
+    NODE_COPYFROM_REV = "Node-copyfrom-rev"
+    NODE_COPYFROM_PATH = "Node-copyfrom-path"
+    TEXT_COPY_SOURCE_MD5 = "Text-copy-source-md5"
+    TEXT_COPY_SOURCE_SHA1 = "Text-copy-source-sha1"
+    TEXT_CONTENT_MD5 = "Text-content-md5"
+    TEXT_CONTENT_SHA1 = "Text-content-sha1"
+
+
     CACHE_HASH = "CACHE-HASH"
     CACHE_SIZE = "CACHE-SIZE"
 
     NODE_RECORD_HEADERS = [
         NODE_PATH_STR,
-        "Node-kind",
-        "Node-action",
-        "Node-copyfrom-rev",
-        "Node-copyfrom-path",
+        NODE_KIND_STR,
+        NODE_ACTION_STR,
+        NODE_COPYFROM_REV,
+        NODE_COPYFROM_PATH,
         PROP_CONTENTLEN_STR,
         TEXT_CONTENTLEN_STR,
-        "Text-copy-source-md5",
-        "Text-copy-source-sha1",
-        "Text-content-md5",
-        "Text-content-sha1",
+        TEXT_COPY_SOURCE_MD5,
+        TEXT_COPY_SOURCE_SHA1,
+        TEXT_CONTENT_MD5,
+        TEXT_CONTENT_SHA1,
         CONTENTLEN_STR
     ]
 
