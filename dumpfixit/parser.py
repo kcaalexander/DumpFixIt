@@ -399,7 +399,7 @@ class DumpParser(object):
             filepos = fs.tell()
             line = fs.readline()
 
-        # Noting to return.
+        # Nothing to return.
         return (None, None, {})
 
 
