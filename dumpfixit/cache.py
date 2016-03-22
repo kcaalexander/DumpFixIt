@@ -99,6 +99,7 @@ class CacheProvider(object):
 
         self.__open()
 
+
     def __open(self):
         ### FIXME: Should we convert a exiting in-file cache to
         ###        in-memory, rather than deleting it?
@@ -176,3 +177,119 @@ class CacheProvider(object):
         cur.close()
 
         return record
+
+
+    def cache_store_revision(self, revision):
+        """
+        Stores revision into cache.
+
+        Takes a revision record and store the revision entries including
+        revprops into the cache.
+
+        Args:
+           revision: Dict of revision record.
+
+        Returns:
+           None
+        """
+
+        cur = self._cache_conn.cursor()
+        cur.execute("INSERT INTO Revision (Rev, PropContentLen, ContentLen, " \
+                    "FilePos, RecLen, Checksum) VALUES ('%d', '%s', '%s', " \
+                    "'%d', '%d', '%s')" % (revision[2][self.REVISION_STR],
+                     revision[2][self.PROP_CONTENTLEN_STR],
+                     revision[2][self.CONTENTLEN_STR],
+                     revision[0],
+                     revision[2][self.CACHE_SIZE],
+                     revision[2][self.CACHE_HASH]))
+        for prop in revision[3]:
+            cur.execute("INSERT INTO RevisionProps(Rev, Key, Value) " \
+                        "VALUES ('%d', '%s', '%s')" %
+                        (revision[2][self.REVISION_STR],
+                         prop, revision[3][prop]))
+        self._cache_conn.commit()
+        cur.close()
+
+
+    def cache_store_node(self, revision, node):
+        """
+        Stores node into cache.
+
+        Takes a revision & node record and store the node entries including
+        nodeprops into the cache.
+
+        Args:
+           revision: Dict of revision record.
+           node: Dict of revision record.
+
+        Returns:
+           None
+        """
+
+        cur = self._cache_conn.cursor()
+        cur.execute("INSERT INTO Node(Rev, NodePath, NodeKind, NodeAction, " \
+                    "NodeCopyFromRev, NodeCopyFromPath, PropContentLen, " \
+                    "TextContentLen, TextCopySrcMD5, TextCopySrcSHA1, " \
+                    "TextContentMD5, TextContentSHA1, ContentLen, FilePos, " \
+                    "RecLen, Checksum) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, " \
+                    "?, ?, ?, ?, ?, ?, ?)", (revision[2][self.REVISION_STR],
+                     node[2].has_key(self.NODE_PATH_STR) and
+                                       node[2][self.NODE_PATH_STR] or None,
+                     node[2].has_key(self.NODE_KIND_STR) and
+                                       node[2][self.NODE_KIND_STR] or None,
+                     node[2].has_key(self.NODE_ACTION_STR) and
+                                     node[2][self.NODE_ACTION_STR] or None,
+                     node[2].has_key(self.NODE_COPYFROM_REV) and
+                                   node[2][self.NODE_COPYFROM_REV] or None,
+                     node[2].has_key(self.NODE_COPYFROM_PATH) and
+                                  node[2][self.NODE_COPYFROM_PATH] or None,
+                     node[2].has_key(self.PROP_CONTENTLEN_STR) and
+                                 node[2][self.PROP_CONTENTLEN_STR] or None,
+                     node[2].has_key(self.TEXT_CONTENTLEN_STR) and
+                                 node[2][self.TEXT_CONTENTLEN_STR] or None,
+                     node[2].has_key(self.TEXT_COPY_SOURCE_MD5) and
+                                node[2][self.TEXT_COPY_SOURCE_MD5] or None,
+                     node[2].has_key(self.TEXT_COPY_SOURCE_SHA1) and
+                               node[2][self.TEXT_COPY_SOURCE_SHA1] or None,
+                     node[2].has_key(self.TEXT_CONTENT_MD5) and
+                                    node[2][self.TEXT_CONTENT_MD5] or None,
+                     node[2].has_key(self.TEXT_CONTENT_SHA1) and
+                                   node[2][self.TEXT_CONTENT_SHA1] or None,
+                     node[2].has_key(self.CONTENTLEN_STR) and
+                                   node[2][self.CONTENTLEN_STR] or None,
+                     node[0], node[2][self.CACHE_SIZE],
+                     node[2][self.CACHE_HASH],))
+
+        node_id = cur.lastrowid
+        if node[2].has_key(self.PROP_CONTENTLEN_STR):
+            for prop in node[3]:
+                cur.execute("INSERT INTO NodeProps(Rev, NodeID, Key, Value) " \
+                            "VALUES (?, ?, ?, ?)", 
+                            (revision[2][self.REVISION_STR], node_id,
+                             prop, node[3][prop]))
+        self._cache_conn.commit()
+        cur.close()
+
+
+    def cache_store_revisionall(self, revision):
+        """
+        Stores full revision into cache.
+
+        Takes a revision record and store the revision entries including
+        revprops, node, nodeprops entries into the cache.
+
+        Args:
+           revision: Dict of revision record.
+
+        Returns:
+           None
+        """
+
+        self.cache_store_revision(revision)
+        if revision[4] is not None:
+            while True:
+                try:
+                    node = revision[4].next()
+                    self.cache_store_node(revision, node)
+                except StopIteration:
+                    break;
