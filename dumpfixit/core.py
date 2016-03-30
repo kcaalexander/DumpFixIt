@@ -26,6 +26,7 @@ __all__ = ["CommandProvider", "Singleton", "ConstNames",
 
 import re
 import error
+import hashlib
 
 def Singleton(cls):
     _instances_ = {}
@@ -258,9 +259,39 @@ class Record:
             if len(s) >= 2:
                self[s[0]] = s[1].strip()
 
+        return
+
 
 class Header(Record, ConstNames):
-    pass
+    def update(self, text, addr=None):
+        if addr is None:
+            raise ValueError
+
+        self._start_addr = addr
+        self._size = len(text)
+
+        cache_hash = hashlib.md5()
+        cache_hash.update(text)
+        self._hash = cache_hash.hexdigest()
+
+        itr = re.finditer("[^\n]*", text)
+        for line in itr:
+            s = line.group().split(":", 1)
+            if len(s) < 2:
+                continue
+            if s[0] == self.DUMP_FORMAT_STR:
+                self[self.DUMP_FORMAT_STR] = int(s[1])
+
+            if s[0] == self.UUID_STR:
+                self[self.UUID_STR] = s[1].strip()
+                # returns as soon as the uuid is found.
+                break
+
+            if self.has_key(self.DUMP_FORMAT_STR) and \
+               self[self.DUMP_FORMAT_STR] < 2:
+                # UUID won't exist for version below 2.
+                break
+        return
 
 
 class Revision(Record, ConstNames):
