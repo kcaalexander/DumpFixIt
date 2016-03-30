@@ -23,51 +23,14 @@
 
 import pdb
 import hashlib
+from core import ConstNames
 
 __all__ = ["DumpParser"]
 
-class DumpParser(object):
-    PROPS_END_STR = "PROPS-END"
-    DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
-    UUID_STR = "UUID"
-    REVISION_STR = "Revision-number"
-    PROP_CONTENTLEN_STR = "Prop-content-length"
-    TEXT_CONTENTLEN_STR = "Text-content-length"
-    CONTENTLEN_STR = "Content-length"
-    NODE_PATH_STR = "Node-path"
-    NODE_KIND_STR = "Node-kind"
-    NODE_ACTION_STR = "Node-action"
-    NODE_COPYFROM_REV = "Node-copyfrom-rev"
-    NODE_COPYFROM_PATH = "Node-copyfrom-path"
-    TEXT_COPY_SOURCE_MD5 = "Text-copy-source-md5"
-    TEXT_COPY_SOURCE_SHA1 = "Text-copy-source-sha1"
-    TEXT_CONTENT_MD5 = "Text-content-md5"
-    TEXT_CONTENT_SHA1 = "Text-content-sha1"
-
+class DumpParser(object, ConstNames):
 
     CACHE_HASH = "CACHE-HASH"
     CACHE_SIZE = "CACHE-SIZE"
-
-    NODE_RECORD_HEADERS = [
-        NODE_PATH_STR,
-        NODE_KIND_STR,
-        NODE_ACTION_STR,
-        NODE_COPYFROM_REV,
-        NODE_COPYFROM_PATH,
-        PROP_CONTENTLEN_STR,
-        TEXT_CONTENTLEN_STR,
-        TEXT_COPY_SOURCE_MD5,
-        TEXT_COPY_SOURCE_SHA1,
-        TEXT_CONTENT_MD5,
-        TEXT_CONTENT_SHA1,
-        CONTENTLEN_STR
-    ]
-
-    REV_RECORD_HEADERS = [
-        REVISION_STR,
-        PROP_CONTENTLEN_STR,
-        CONTENTLEN_STR
-    ]
 
     # FIXME: How to be tolerant to malformed dumpfile.
     # What if, if we don't find what we look for in the
