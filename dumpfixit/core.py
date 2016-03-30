@@ -21,7 +21,8 @@
 #
 #===============================================================================
 
-__all__ = ["CommandProvider", "Singleton"]
+__all__ = ["CommandProvider", "Singleton", "ConstNames",
+           "Header", "Revision", "RevProps", "Node", "NodeProps"]
 
 import re
 import error
@@ -61,6 +62,46 @@ class CommandProvider(object):
         if cls is not None:
             cls()
         pass
+
+
+class ConstNames:
+    PROPS_END_STR = "PROPS-END"
+    DUMP_FORMAT_STR = "SVN-fs-dump-format-version"
+    UUID_STR = "UUID"
+    REVISION_STR = "Revision-number"
+    PROP_CONTENTLEN_STR = "Prop-content-length"
+    TEXT_CONTENTLEN_STR = "Text-content-length"
+    CONTENTLEN_STR = "Content-length"
+    NODE_PATH_STR = "Node-path"
+    NODE_KIND_STR = "Node-kind"
+    NODE_ACTION_STR = "Node-action"
+    NODE_COPYFROM_REV = "Node-copyfrom-rev"
+    NODE_COPYFROM_PATH = "Node-copyfrom-path"
+    TEXT_COPY_SOURCE_MD5 = "Text-copy-source-md5"
+    TEXT_COPY_SOURCE_SHA1 = "Text-copy-source-sha1"
+    TEXT_CONTENT_MD5 = "Text-content-md5"
+    TEXT_CONTENT_SHA1 = "Text-content-sha1"
+
+    NODE_RECORD_HEADERS = [
+        NODE_PATH_STR,
+        NODE_KIND_STR,
+        NODE_ACTION_STR,
+        NODE_COPYFROM_REV,
+        NODE_COPYFROM_PATH,
+        PROP_CONTENTLEN_STR,
+        TEXT_CONTENTLEN_STR,
+        TEXT_COPY_SOURCE_MD5,
+        TEXT_COPY_SOURCE_SHA1,
+        TEXT_CONTENT_MD5,
+        TEXT_CONTENT_SHA1,
+        CONTENTLEN_STR
+    ]
+
+    REV_RECORD_HEADERS = [
+        REVISION_STR,
+        PROP_CONTENTLEN_STR,
+        CONTENTLEN_STR
+    ]
 
 
 class Record:
@@ -218,19 +259,19 @@ class Record:
                self[s[0]] = s[1].strip()
 
 
-class Header(Record):
+class Header(Record, ConstNames):
     pass
 
 
-class Revision(Record):
+class Revision(Record, ConstNames):
     pass
 
 
-class RevProps(Record):
+class RevProps(Record, ConstNames):
     pass
 
 
-class Node(Record):
+class Node(Record, ConstNames):
     pass
 
 
