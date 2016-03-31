@@ -247,7 +247,10 @@ class Record:
             raise ValueError
 
         self._start_addr = addr
-        self._size = len(text)
+        if self._size is None:
+            self._size = len(text)
+        else:
+            self._size += len(text)
         self._hash.update(text)
 
         itr = re.finditer("[^\n]*", text)
@@ -265,7 +268,10 @@ class Header(Record, ConstNames):
             raise ValueError
 
         self._start_addr = addr
-        self._size = len(text)
+        if self._size is None:
+            self._size = len(text)
+        else:
+            self._size += len(text)
         self._hash.update(text)
 
         itr = re.finditer("[^\n]*", text)
