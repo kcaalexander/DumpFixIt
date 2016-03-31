@@ -109,7 +109,7 @@ class Record:
     def __init__(self):
         self._start_addr = None
         self._size = None
-        self._hash = None
+        self._hash = hashlib.md5()
         self._entries = {}
 
     def __eq__(self, other):
@@ -134,7 +134,7 @@ class Record:
 
     def __hashof__(self):
         'Record.__hashof__() -> Hash of the Record in file.'
-        return self._hash
+        return self._hash.hexdigest()
 
     def __addrof__(self):
         'Record.__addrof__() -> File pointer to locate the Record in file.'
@@ -248,10 +248,7 @@ class Record:
 
         self._start_addr = addr
         self._size = len(text)
-
-        cache_hash = hashlib.md5()
-        cache_hash.update(text)
-        self._hash = cache_hash.hexdigest()
+        self._hash.update(text)
 
         itr = re.finditer("[^\n]*", text)
         for line in itr:
@@ -269,10 +266,7 @@ class Header(Record, ConstNames):
 
         self._start_addr = addr
         self._size = len(text)
-
-        cache_hash = hashlib.md5()
-        cache_hash.update(text)
-        self._hash = cache_hash.hexdigest()
+        self._hash.update(text)
 
         itr = re.finditer("[^\n]*", text)
         for line in itr:
