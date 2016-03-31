@@ -242,8 +242,8 @@ class Record:
            return False
         return True
 
-    def update(self, text, addr=None):
-        if addr is None:
+    def update(self, text=None, addr=None):
+        if addr is None or text is None:
             raise ValueError
 
         self._start_addr = addr
@@ -263,8 +263,8 @@ class Record:
 
 
 class Header(Record, ConstNames):
-    def update(self, text, addr=None):
-        if addr is None:
+    def update(self, text=None, addr=None):
+        if addr is None or text is None:
             raise ValueError
 
         self._start_addr = addr
