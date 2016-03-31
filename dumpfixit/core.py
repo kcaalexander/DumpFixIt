@@ -128,12 +128,12 @@ class Record:
             return True
         return (self._entries != other._entries)
 
-    def _sizeof__(self):
-        'Record._sizeof__() -> Physical size in bytes  of the Record in file.'
+    def __sizeof__(self):
+        'Record.__sizeof__() -> Physical size in bytes  of the Record in file.'
         return self._size
 
-    def _hashof__(self):
-        'Record._hashof__() -> Hash of the Record in file.'
+    def __hashof__(self):
+        'Record.__hashof__() -> Hash of the Record in file.'
         return self._hash
 
     def __addrof__(self):
