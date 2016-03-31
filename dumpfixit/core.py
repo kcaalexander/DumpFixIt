@@ -129,8 +129,8 @@ class Record:
         return (self._entries != other._entries)
 
     def __sizeof__(self):
-        'Record.__sizeof__() -> Physical size in bytes  of the Record in file.'
-        return self._size
+        'Record.__sizeof__() -> Physical size in bytes of the Record in file.'
+        return self._size if self._size is not None else 0
 
     def __hashof__(self):
         'Record.__hashof__() -> Hash of the Record in file.'
@@ -138,7 +138,7 @@ class Record:
 
     def __addrof__(self):
         'Record.__addrof__() -> File pointer to locate the Record in file.'
-        return self._start_addr
+        return self._start_addr if self._start_addr is not None else 0
 
     def copy(self):
         'Record.copy() -> a shallow copy of Record.'
