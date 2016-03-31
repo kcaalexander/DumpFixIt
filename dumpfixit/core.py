@@ -244,7 +244,7 @@ class Record:
 
     def update(self, text=None, addr=None):
         if addr is None or text is None:
-            raise ValueError
+            raise ValueError('must be a non-None value.')
 
         self._start_addr = addr
         if self._size is None:
@@ -265,7 +265,7 @@ class Record:
 class Header(Record, ConstNames):
     def update(self, text=None, addr=None):
         if addr is None or text is None:
-            raise ValueError
+            raise ValueError('must be a non-None value.')
 
         self._start_addr = addr
         if self._size is None:
