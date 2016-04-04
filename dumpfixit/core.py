@@ -243,7 +243,6 @@ class Record:
         return True
 
     def update(self, text=None, addr=None):
-
         if text is None:
             raise ValueError('must be a non-None value.')
         # Expects to call addr with non-None arg for the first time.
@@ -272,7 +271,6 @@ class Record:
 
 class Header(Record, ConstNames):
     def update(self, text=None, addr=None):
-
         if text is None:
             raise ValueError('must be a non-None value.')
         # Expects to call addr with non-None arg for the first time.
@@ -311,7 +309,32 @@ class Header(Record, ConstNames):
 
 
 class Revision(Record, ConstNames):
-    pass
+    def update(self, text=None, addr=None):
+        if text is None:
+            raise ValueError('must be a non-None value.')
+        # Expects to call addr with non-None arg for the first time.
+        if addr is None :
+            if self._start_addr is None:
+                raise ValueError('must be a non-None value.')
+            else:
+                self._start_addr = addr
+        else:
+            self._start_addr = addr
+
+        if self._size is None:
+            self._size = len(text)
+        else:
+            self._size += len(text)
+        self._hash.update(text)
+
+        itr = re.finditer("[^\n]*", text)
+        for line in itr:
+            s = line.group().split(":", 1)
+            if len(s) < 2:
+                continue
+            if s[0] in REV_RECORD_HEADERS:
+                self[s[0]] = int(s[1])
+        return
 
 
 class RevProps(Record, ConstNames):
