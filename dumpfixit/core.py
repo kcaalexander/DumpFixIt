@@ -270,6 +270,24 @@ class Record:
 
 
 class Header(Record, ConstNames):
+    def get_format(self):
+        'Header.get_format() -> Header["SVN-fs-dump-format-version"]'
+        # Returns integer dump file version. If not found returns None.
+        try:
+            version = self._entries[self.DUMP_FORMAT_STR]
+        except KeyError:
+           return None
+        return int(version)
+
+    def get_uuid(self):
+        'Header.get_uuid() -> Header["UUID"]'
+        # Returns string UUID of dump file. If not found returns None.
+        try:
+            uuid = self._entries[self.UUID_STR]
+        except KeyError:
+           return None
+        return uuid
+
     def update(self, text=None, addr=None):
         if text is None:
             raise ValueError('must be a non-None value.')
