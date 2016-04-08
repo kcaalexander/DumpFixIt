@@ -347,6 +347,24 @@ class Header(Record, ConstNames):
 
 
 class Revision(Record, ConstNames):
+    def set_revision(self, rev):
+        'Revision.set_revision(x) -> Revision["Revision-number"] = x'
+        # Sets an integer revision number.
+        if type(rev) is not int:
+            raise ValueError
+
+        self[self.REVISION_STR] = int(rev)
+        return self[self.REVISION_STR]
+
+    def get_revision(self):
+        'Revision.get_format() -> Revision["Revision-number"]'
+        # Returns integer revision number. If not found returns None.
+        try:
+            rev = self._entries[self.REVISION_STR]
+        except KeyError:
+           return None
+        return int(rev)
+
     def update(self, text=None, addr=None):
         if text is None:
             raise ValueError('must be a non-None value.')
