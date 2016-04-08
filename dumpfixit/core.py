@@ -270,6 +270,15 @@ class Record:
 
 
 class Header(Record, ConstNames):
+    def set_format(self, version):
+        'Header.set_format(x) -> Header["SVN-fs-dump-format-version"] = x'
+        # Sets an integer dump file version.
+        if type(version) is not int:
+            raise ValueError
+
+        self[self.DUMP_FORMAT_STR] = int(version)
+        return self[self.DUMP_FORMAT_STR]
+
     def get_format(self):
         'Header.get_format() -> Header["SVN-fs-dump-format-version"]'
         # Returns integer dump file version. If not found returns None.
@@ -278,6 +287,17 @@ class Header(Record, ConstNames):
         except KeyError:
            return None
         return int(version)
+
+    def set_uuid(self, uuid):
+        'Header.get_uuid(x) -> Header["UUID"] = x'
+        # Sets UUID to dump file.
+
+        if type(uuid) is not str:
+            raise ValueError
+        #TODO: Validate UUID.
+
+        self[self.UUID_STR] = uuid
+        return self[self.UUID_STR]
 
     def get_uuid(self):
         'Header.get_uuid() -> Header["UUID"]'
