@@ -260,15 +260,6 @@ class Record:
 
         self.set_offset(addr)
 
-        # Expects to call addr with non-None arg for the first time.
-        if addr is None :
-            if self._start_addr is None:
-                raise ValueError('must be a non-None value.')
-            else:
-                self._start_addr = addr
-        else:
-            self._start_addr = addr
-
         if self._size is None:
             self._size = len(text)
         else:
