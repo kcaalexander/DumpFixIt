@@ -106,8 +106,8 @@ class ConstNames:
 
 
 class Record:
-    def __init__(self):
-        self._start_addr = None
+    def __init__(self, offset):
+        self._start_addr = offset
         self._size = None
         self._hash = hashlib.md5()
         self._entries = {}
@@ -242,9 +242,24 @@ class Record:
            return False
         return True
 
+    def set_offset(self, offset=None):
+        # Expects to call offset with non-None arg for the first time.
+        if offset is None :
+            if self._start_addr is None:
+                raise ValueError('must be a non-None value.')
+            else:
+                self._start_addr = offset
+        else:
+            self._start_addr = offset
+
+        return
+
     def update(self, text=None, addr=None):
         if text is None:
             raise ValueError('must be a non-None value.')
+
+        self.set_offset(addr)
+
         # Expects to call addr with non-None arg for the first time.
         if addr is None :
             if self._start_addr is None:
