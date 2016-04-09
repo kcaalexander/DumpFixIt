@@ -317,14 +317,8 @@ class Header(Record, ConstNames):
     def update(self, text=None, offset=None):
         if text is None:
             raise ValueError('must be a non-None value.')
-        # Expects to call offset with non-None arg for the first time.
-        if offset is None :
-            if self._start_addr is None:
-                raise ValueError('must be a non-None value.')
-            else:
-                self._start_addr = offset
-        else:
-            self._start_addr = offset
+
+        self.set_offset(offset)
 
         if self._size is None:
             self._size = len(text)
@@ -374,14 +368,8 @@ class Revision(Record, ConstNames):
     def update(self, text=None, offset=None):
         if text is None:
             raise ValueError('must be a non-None value.')
-        # Expects to call offset with non-None arg for the first time.
-        if offset is None :
-            if self._start_addr is None:
-                raise ValueError('must be a non-None value.')
-            else:
-                self._start_addr = offset
-        else:
-            self._start_addr = offset
+
+        self.set_offset(offset)
 
         if self._size is None:
             self._size = len(text)
