@@ -106,7 +106,7 @@ class ConstNames:
 
 
 class Record:
-    def __init__(self, offset):
+    def __init__(self, offset=None):
         self._start_addr = offset
         self._size = None
         self._hash = hashlib.md5()
