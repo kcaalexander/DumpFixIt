@@ -105,7 +105,7 @@ class ConstNames:
     ]
 
 
-class Record:
+class Record(object):
     def __init__(self, offset=None):
         self._start_addr = offset
         self._size = None
