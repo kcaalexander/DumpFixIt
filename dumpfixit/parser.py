@@ -24,6 +24,7 @@
 import pdb
 import hashlib
 from core import ConstNames
+from core import Header
 
 __all__ = ["DumpParser"]
 
@@ -387,36 +388,29 @@ class DumpParser(object, ConstNames):
            dict: Header record.
         """
 
-        record={}
-        record[self.CACHE_SIZE] = 0
-        cache_hash = hashlib.md5()
+        hrec = Header(0)
         fs.seek(0)
+
         line = fs.readline()
         while line != "":
-            record[self.CACHE_SIZE] += len(line)
-            cache_hash.update(line)
-            s = line.split(":", 1)
             # WARNING: Dump version stamp must be the first line, if not
             # "Malformed dumpfile header" error occurs. But we do ignore
             # this rule, because anyhow we will regenerate the dump file
             # correctly.
-            if s[0] == self.DUMP_FORMAT_STR:
-                record[self.DUMP_FORMAT_STR] = int(s[1])
-
+            hrec.update(line, 0)
+            s = line.split(":", 1)
             if s[0] == self.UUID_STR:
-                record[self.UUID_STR] = s[1].strip()
                 # returns as soon as the uuid is found.
                 break
 
-            if record.has_key(self.DUMP_FORMAT_STR) and \
-               record[self.DUMP_FORMAT_STR] < 2:
+            if s[0] == self.DUMP_FORMAT_STR and \
+               int(s[1]) < 2:
                 # UUID won't exist for version below 2.
                 break
 
             line = fs.readline()
 
-        record[self.CACHE_HASH] = cache_hash.hexdigest()
-        return record
+        return hrec
 
 
     def get_revision(self, fs, rev = None):
