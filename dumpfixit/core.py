@@ -382,7 +382,7 @@ class Revision(Record, ConstNames):
             s = line.group().split(":", 1)
             if len(s) < 2:
                 continue
-            if s[0] in REV_RECORD_HEADERS:
+            if s[0] in self.REV_RECORD_HEADERS:
                 self[s[0]] = int(s[1])
         return
 
