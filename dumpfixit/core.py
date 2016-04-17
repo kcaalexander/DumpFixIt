@@ -347,6 +347,11 @@ class Header(Record, ConstNames):
 
 
 class Revision(Record, ConstNames):
+    def __init__(self, offset=None):
+        super(Revision, self).__init__(offset)
+        self._revprops = None
+        self._nodes = None
+
     def set_revision(self, rev):
         'Revision.set_revision(x) -> Revision["Revision-number"] = x'
         # Sets an integer revision number.
