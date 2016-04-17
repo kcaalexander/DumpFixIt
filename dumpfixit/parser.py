@@ -24,7 +24,7 @@
 import pdb
 import hashlib
 from core import ConstNames
-from core import Header
+from core import Header, Revision
 
 __all__ = ["DumpParser"]
 
@@ -337,12 +337,10 @@ class DumpParser(object, ConstNames):
         if pos is not None:
             fs.seek(pos)
 
-        record={}
+        rrec = Revision()
         filepos = fs.tell()
         found_record = False
         found_pos = 0
-        found_size = 0
-        cache_hash = hashlib.md5()
 
         # Revision record starts of with the "Revision-number:" and ends with
         # new line "\n".
@@ -350,31 +348,25 @@ class DumpParser(object, ConstNames):
         while line != "":
             s = line.split(":", 1)
 
-            if found_record == True and s[0] != '\n':
-                record[s[0]] = s[1].strip()
-
             if (s[0] == self.REVISION_STR) and \
                (rev is None or long(s[1]) == rev):
                 # A revision is found or a requested revision is found.
                 found_record = True
                 found_pos = filepos
-                record[self.REVISION_STR] = int(s[1])
 
             if found_record == True:
-                cache_hash.update(line)
-                found_size += len(line)
+                rrec.update(line, 0)
 
             if found_record == True and s[0] == '\n':
                 found_record = False
-                record[self.CACHE_HASH] = cache_hash.hexdigest()
-                record[self.CACHE_SIZE] = found_size
-                return (found_pos, found_size, record)
+                rrec.set_offset(found_pos)
+                return rrec
 
             filepos = fs.tell()
             line = fs.readline()
 
         # Nothing to return.
-        return (None, None, {})
+        return None
 
 
     def get_header(self, fs):
@@ -485,7 +477,7 @@ class DumpParser(object, ConstNames):
         while True:
              # Finds the next revision record.
              rev_record = self._get_revision(fs, rev=revision)
-             if rev_record[1] is None:
+             if rev_record is None:
                  break
              # Finds the revprops for revision.
              rev_record += (self._get_revprops(fs, rev_record),)
