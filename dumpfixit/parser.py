@@ -24,7 +24,7 @@
 import pdb
 import hashlib
 from core import ConstNames
-from core import Header, Revision
+from core import Header, Revision, RevProps
 
 __all__ = ["DumpParser"]
 
@@ -277,39 +277,18 @@ class DumpParser(object, ConstNames):
         Return:
            dict: Containg revprops entries.
         """
-        if rev_record[0] is not None and \
-           rev_record[1] is not None:
-            fs.seek(rev_record[0] + rev_record[1])
 
-        record = {}
+        rev_startaddr = rev_record.__addrof__()
+        rev_sizeof = rev_record.__sizeof__()
+        fs.seek(rev_startaddr + rev_sizeof)
 
-        line = fs.readline()
-        while line != "":
-            if line.strip() == self.PROPS_END_STR:
-                break
+        rprec = RevProps(fs.tell())
 
-            # Reads K record.
-            krec = line.strip().split()
-            key = fs.readline().strip()
-            if long(krec[1]) != len(key):
-              # TODO: raise a warning exception to say key len and actual
-              # don't match.
-              pass
+        if (rev_record.has_key(self.PROP_CONTENTLEN_STR)):
+            lines = fs.read(rev_record[self.PROP_CONTENTLEN_STR])
+            rprec.update(lines)
 
-            # Reads V record.
-            line = fs.readline()
-            vrec = line.strip().split()
-            value = fs.readline().strip()
-            if long(vrec[1]) != len(value):
-              # TODO: raise a warning exception to say key len and actual don't
-              # match.
-              pass
-
-            record[key] = value
-            line = fs.readline()
-
-        return record
-
+        return rprec
 
     def _get_revision(self, fs, rev = None, pos = None):
         """
@@ -480,9 +459,9 @@ class DumpParser(object, ConstNames):
              if rev_record is None:
                  break
              # Finds the revprops for revision.
-             rev_record += (self._get_revprops(fs, rev_record),)
+             revp_record = self._get_revprops(fs, rev_record)
              # Included node generator part of rev_record.
-             rev_record += (self.get_node_iter(fs, rev_record),)
+             node_record = self.get_node_iter(fs, rev_record)
 
              yield rev_record
              # Move to next rev.
