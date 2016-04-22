@@ -62,6 +62,18 @@ class DumpFixItError(Error):
             Error.__init__(self, "Unknown error while executing.")
 
 
+class DumpFileunrecognisableError(Error):
+    """Raised when Dump file in not a valid svn dump file."""
+    def __init__(self, fname):
+        Error.__init__(self, "Dump file '%s' invalid/unrecognisable." % fname)
+
+
+class DumpFileUnsupportedFormatError(Error):
+    """Raised when Dump file format version is not supported."""
+    def __init__(self, version):
+        Error.__init__(self, "Unsupported dump file format '%s'." % version)
+
+
 class DumpFileNotFoundError(Error):
     """Raised when Dump File not found."""
     def __init__(self, fname):
