@@ -34,6 +34,9 @@ __all__ = ["DumpProvider"]
 @Singleton
 class DumpProvider(DumpParser, CacheProvider):
 
+    # is the max version of dump file format support by the DumpProvider.
+    SUPPORTED_DUMP_FORMAT_VERSIONS = [1, 2]
+
     __dump_file__ = None # Absoulte path to dump filename.
     __dump_format__ = None # Dump file format
     __dump_uuid__ = None # Dump UUID
@@ -57,17 +60,29 @@ class DumpProvider(DumpParser, CacheProvider):
 
         try:
             self._dump_fptr = open(self.__dump_file__, "rt")
-            header = self.get_header(self._dump_fptr)
-            self.__dump_format__ = int(header[self.DUMP_FORMAT_STR])
-            self.__dump_uuid__ = str(header[self.UUID_STR])
+            header = self.get_header()
+
+            if header.has_key(self.DUMP_FORMAT_STR):
+               self.__dump_format__ = int(header[self.DUMP_FORMAT_STR])
+
+            if header.has_key(self.UUID_STR):
+               self.__dump_uuid__ = str(header[self.UUID_STR])
         except Exception as err:
             raise error.DumpFixItError(err)
+
+        # Declares file not a svn dump file if format version is missing.
+        if self.__dump_format__ is None:
+            raise error.DumpFileunrecognisableError(dump_fname)
+        # Check for support dump formats.
+        if self.__dump_format__ not in self.SUPPORTED_DUMP_FORMAT_VERSIONS:
+            raise error.DumpFileUnsupportedFormatError(self.__dump_format__)
 
         CacheProvider.__init__(self, dump_fname, rm_cache, not retain_cache)
 
     def reader(self, rev=0):
 
         header = self.get_header()
+
         # check for exitance/useablity/validation of dmp_fname
         # Read in dump version and uuid
         #
