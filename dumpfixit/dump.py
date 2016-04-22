@@ -67,13 +67,13 @@ class DumpProvider(DumpParser, CacheProvider):
 
     def reader(self, rev=0):
 
-        header = self.get_header(self._dump_fptr)
+        header = self.get_header()
         # check for exitance/useablity/validation of dmp_fname
         # Read in dump version and uuid
         #
         #pdb.set_trace()
-        revision = self.get_revision_iter(self._dump_fptr, rev)
-        #node = self._get_node(self._dump_fptr, revision)
+        revision = self.get_revision_iter(rev)
+        #node = self._get_node(revision)
         while True:
           try:
              rev = revision.next()

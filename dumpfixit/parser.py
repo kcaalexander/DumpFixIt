@@ -37,7 +37,7 @@ class DumpParser(object, ConstNames):
     # What if, if we don't find what we look for in the
     # specific position?
 
-    def _get_nodeprops(self, fs, node_record):
+    def _get_nodeprops(self, node_record):
         """
         Get a nodeprops from a given node record.
 
@@ -47,12 +47,13 @@ class DumpParser(object, ConstNames):
         'PROPS-END' tag.
 
         Args:
-           fs (file): File object of dumpfile to read
            node_record (tuple): As returned by _get_node().
 
         Return:
            dict: Containg revprops entries.
-        """
+        """ 
+        fs = self._dump_fptr
+
         if node_record[0] is not None and \
            node_record[1] is not None:
             fs.seek(node_record[0] + node_record[1])
@@ -88,7 +89,7 @@ class DumpParser(object, ConstNames):
         pass
 
 
-    def get_node_content(self, fs, node_record, skip = False, size=4096):
+    def get_node_content(self, node_record, skip = False, size=4096):
         """
         Gets node content from a given node record.
 
@@ -99,7 +100,6 @@ class DumpParser(object, ConstNames):
         content.
 
         Args:
-           fs (file): File object of dumpfile to read
            node_record (tuple): As returned by _get_node().
            skip (boolean): A True will skip the content by just moving the
                    file pointer. Defaults to False
@@ -112,6 +112,7 @@ class DumpParser(object, ConstNames):
         Raises:
            StopIteration: When no more content to iterate.
         """
+        fs = self._dump_fptr
 
         def get_node_content_iter(fs, node_record, size):
             """
@@ -144,7 +145,7 @@ class DumpParser(object, ConstNames):
             return self.get_node_content_iter(fs, node_record, size)
 
 
-    def _get_node(self, fs):
+    def _get_node(self):
         """
         Get a node record.
 
@@ -154,9 +155,6 @@ class DumpParser(object, ConstNames):
         a "Revision-number:" tag). Returns a tuple if a node record is
         found or else a None tuple.
 
-        Args:
-           fs (file): File object of dumpfile to read
-
         Return:
           tuple: With tuple containing 3 elements. All elements will 'None' if
                  node not found else index for the elements are as follows...
@@ -165,6 +163,7 @@ class DumpParser(object, ConstNames):
                   1) (long) Size of the revision record.
                   2) (dict) node record.
         """
+        fs = self._dump_fptr
         record = {}
         filepos = fs.tell()
         found_record = False
@@ -209,7 +208,7 @@ class DumpParser(object, ConstNames):
         return (None, None, {})
 
 
-    def get_node_iter(self, fs, rev_record):
+    def get_node_iter(self, rev_record):
         """
         Return a generator yielding a node record.
 
@@ -218,7 +217,6 @@ class DumpParser(object, ConstNames):
         get_revision_iter().
 
         Args:
-           fs (file): File object of dumpfile to read
            rev_record (tuple): As returned by get_revision() or
                                get_revision_iter()
 
@@ -234,6 +232,7 @@ class DumpParser(object, ConstNames):
         Raises:
            StopIteration: When no more node records to iterate.
         """
+        fs = self._dump_fptr
 
         if rev_record[0] is not None and \
            rev_record[1] is not None:
@@ -261,7 +260,7 @@ class DumpParser(object, ConstNames):
              yield node_record
 
 
-    def _get_revprops(self, fs, rev_record):
+    def _get_revprops(self, rev_record):
         """
         Get a revprops from a given revision record.
 
@@ -271,13 +270,12 @@ class DumpParser(object, ConstNames):
         'PROPS-END' tag.
 
         Args:
-           fs (file): File object of dumpfile to read
            rev_record (tuple): As returned by _get_revision().
 
         Return:
            dict: Containg revprops entries.
         """
-
+        fs = self._dump_fptr
         rev_startaddr = rev_record.__addrof__()
         rev_sizeof = rev_record.__sizeof__()
         fs.seek(rev_startaddr + rev_sizeof)
@@ -290,7 +288,7 @@ class DumpParser(object, ConstNames):
 
         return rprec
 
-    def _get_revision(self, fs, rev = None, pos = None):
+    def _get_revision(self, rev = None, pos = None):
         """
         Get a revision record for given revision.
 
@@ -300,7 +298,6 @@ class DumpParser(object, ConstNames):
         position.
 
         Args:
-           fs (file): File object of dumpfile to read
            rev (long): Revision number to get. Default to None.
            pos (long): File pointer in fs where rev will be searched.
 
@@ -312,7 +309,7 @@ class DumpParser(object, ConstNames):
                   1) (long) Size of the revision record.
                   2) (dict) revision record.
         """
-
+        fs = self._dump_fptr
         if pos is not None:
             fs.seek(pos)
 
@@ -348,17 +345,15 @@ class DumpParser(object, ConstNames):
         return None
 
 
-    def get_header(self, fs):
+    def get_header(self):
         """
         Reads header lines from a give dumpfile.
-
-        Args:
-           fs (file): File object of dumpfile to read
 
         Returns:
            dict: Header record.
         """
 
+        fs = self._dump_fptr
         hrec = Header(0)
         fs.seek(0)
 
@@ -384,7 +379,7 @@ class DumpParser(object, ConstNames):
         return hrec
 
 
-    def get_revision(self, fs, rev = None):
+    def get_revision(self, rev = None):
         """
         Get a revision record.
 
@@ -393,7 +388,6 @@ class DumpParser(object, ConstNames):
         given then None is returned.
 
         Args:
-           fs (file): File object of dumpfile to read
            rev (long): Revision number to get. Default to None.
 
         Returns:
@@ -405,6 +399,8 @@ class DumpParser(object, ConstNames):
                   3) (dict) revprops record for the revision.
                   4) (iter) node records for the revision.
         """
+
+        fs = self._dump_fptr
 
         if rev is None:
             return None
@@ -423,7 +419,7 @@ class DumpParser(object, ConstNames):
         return rev_record
 
 
-    def get_revision_iter(self, fs, rev=0):
+    def get_revision_iter(self, rev=0):
         """
         Return a generator yielding a revision record.
 
@@ -431,7 +427,6 @@ class DumpParser(object, ConstNames):
         revprops, nodes starting from a given revision to the last revision.
 
         Args:
-           fs (file): File object of dumpfile to read
            rev (long): Revision number from where the iterator starts.
                        Default to 0.
 
@@ -450,6 +445,7 @@ class DumpParser(object, ConstNames):
 
         # Rewinds the file pointer everytime to top of the file
         # when you call the generator.
+        fs = self._dump_fptr
         fs.seek(0)
         revision = rev
 
