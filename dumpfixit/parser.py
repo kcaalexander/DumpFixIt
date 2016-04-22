@@ -410,11 +410,11 @@ class DumpParser(object, ConstNames):
         fs.seek(0)
 
         # Finds the next revision record.
-        rev_record = self._get_revision(fs, rev=rev)
+        rev_record = self._get_revision(rev=rev)
         # Finds the revprops for revision.
-        rev_record += (self._get_revprops(fs, rev_record),)
+        rev_record += (self._get_revprops(rev_record),)
         # Including node generator part of rev_record.
-        rev_record += (self.get_node_iter(fs, rev_record),)
+        rev_record += (self.get_node_iter(rev_record),)
 
         return rev_record
 
@@ -451,13 +451,13 @@ class DumpParser(object, ConstNames):
 
         while True:
              # Finds the next revision record.
-             rev_record = self._get_revision(fs, rev=revision)
+             rev_record = self._get_revision(rev=revision)
              if rev_record is None:
                  break
              # Finds the revprops for revision.
-             revp_record = self._get_revprops(fs, rev_record)
+             revp_record = self._get_revprops(rev_record)
              # Included node generator part of rev_record.
-             node_record = self.get_node_iter(fs, rev_record)
+             node_record = self.get_node_iter(rev_record)
 
              yield rev_record
              # Move to next rev.
